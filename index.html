@@ -37,7 +37,7 @@
                 <circle cx="12" cy="12" r="3.5" />
               </svg>
             </button>
-            <button class="icon-button" data-screen="profile" aria-label="Call">
+            <button class="icon-button" data-action="call" aria-label="Call Sarah">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3.08 4.18 2 2 0 0 1 5.08 2h3a2 2 0 0 1 2 1.72l.42 2.18a2 2 0 0 1-.54 1.8L8 9.91a16 16 0 0 0 6.09 6.09l2.21-2.01a2 2 0 0 1 1.8-.54l2.18.42A2 2 0 0 1 22 16.92Z" />
               </svg>
@@ -62,8 +62,8 @@
 
               <div class="stats-grid">
                 <div class="stat-box">
-                  <span class="stat-label">Adherence</span>
-                  <strong>82%</strong>
+                  <span class="stat-label">Tasks complete</span>
+                  <strong data-completed-count>1/4</strong>
                 </div>
                 <div class="stat-box">
                   <span class="stat-label">Hydration</span>
@@ -111,7 +111,7 @@
                     <h3>Bath routine</h3>
                     <p>9:00 AM</p>
                   </div>
-                  <button class="mini-tag done-tag" data-action="task-done">Done</button>
+                  <button class="mini-tag done-tag" data-action="task-done" aria-pressed="true">Undo</button>
                 </div>
 
                 <div class="task-item compact-row">
@@ -169,7 +169,7 @@
                 <p class="eyebrow">Schedule</p>
                 <h2>Care calendar</h2>
               </div>
-              <button class="icon-button inline-icon" data-screen="home" aria-label="Back to home">
+                <button class="icon-button inline-icon" data-screen="home" aria-label="Back to home">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
               </button>
             </div>
@@ -184,7 +184,7 @@
                   <h3>Medication review</h3>
                   <p>8:30 AM • Dr. Nguyen</p>
                 </div>
-                <span class="schedule-tag tag-teal">Confirmed</span>
+                <button class="schedule-tag tag-teal calendar-action" data-event="Medication review" data-date="20261002" data-time="083000" data-description="Medication review with Dr. Nguyen">Add to calendar</button>
               </div>
 
               <div class="card schedule-card">
@@ -196,7 +196,7 @@
                   <h3>Physical therapy</h3>
                   <p>10:00 AM • Home visit</p>
                 </div>
-                <span class="schedule-tag tag-amber">Next</span>
+                <button class="schedule-tag tag-amber calendar-action" data-event="Physical therapy" data-date="20261003" data-time="100000" data-description="Physical therapy home visit">Add to calendar</button>
               </div>
 
               <div class="card schedule-card">
@@ -208,7 +208,7 @@
                   <h3>Care team meeting</h3>
                   <p>1:30 PM • Video call</p>
                 </div>
-                <span class="schedule-tag tag-red">Invite</span>
+                <button class="schedule-tag tag-red calendar-action" data-event="Care team meeting" data-date="20261005" data-time="133000" data-description="Care team meeting by video call">Add to calendar</button>
               </div>
             </div>
           </section>
@@ -219,6 +219,7 @@
                 <p class="eyebrow">Alerts</p>
                 <h2>Notifications</h2>
               </div>
+              <button class="text-button" data-action="mark-alerts-read">Mark all read</button>
               <button class="icon-button inline-icon" data-screen="home" aria-label="Back to home">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
               </button>
@@ -283,19 +284,19 @@
             </div>
 
             <div class="card settings-card">
-              <button class="settings-row" data-screen="home">
+              <button class="settings-row" data-setting="care-plan">
                 <span>Care plan</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
               </button>
-              <button class="settings-row" data-screen="home">
+              <button class="settings-row" data-setting="health-records">
                 <span>Health records</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
               </button>
-              <button class="settings-row" data-screen="home">
+              <button class="settings-row" data-setting="notifications">
                 <span>Notifications</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
               </button>
-              <button class="settings-row" data-screen="home">
+              <button class="settings-row" data-setting="emergency-contacts">
                 <span>Emergency contacts</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
               </button>
@@ -321,11 +322,84 @@
     </div>
 
     <div class="toast" id="toast" aria-live="polite">Saved</div>
+    <dialog class="app-dialog" id="app-dialog" aria-labelledby="dialog-title">
+      <form method="dialog" class="dialog-form" id="dialog-form">
+        <div class="dialog-heading">
+          <h2 id="dialog-title"></h2>
+          <button class="icon-button dialog-close" value="cancel" aria-label="Close dialog">×</button>
+        </div>
+        <div id="dialog-content"></div>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel">Cancel</button>
+          <button class="primary-action" id="dialog-save" value="save">Save</button>
+        </div>
+      </form>
+    </dialog>
 
     <script>
       const screens = document.querySelectorAll('.screen');
-      const navItems = document.querySelectorAll('[data-screen]');
+      const navItems = document.querySelectorAll('.nav-item');
       const toast = document.getElementById('toast');
+      const dialog = document.getElementById('app-dialog');
+      const dialogForm = document.getElementById('dialog-form');
+      const dialogTitle = document.getElementById('dialog-title');
+      const dialogContent = document.getElementById('dialog-content');
+      const dialogSave = document.getElementById('dialog-save');
+      const storageKey = 'leopard-care-state';
+      const defaultState = {
+        medicationTaken: false,
+        tasks: ['done', 'next', 'later'],
+        alertsRead: false,
+        profile: {}
+      };
+
+      let state;
+      try {
+        state = { ...defaultState, ...JSON.parse(localStorage.getItem(storageKey) || '{}') };
+      } catch {
+        state = { ...defaultState };
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(state));
+        } catch {
+          showToast('Changes saved for this visit');
+        }
+      }
+
+      function syncStateToPage() {
+        const medicationButton = document.querySelector('[data-action="medication"]');
+        if (state.medicationTaken) {
+          medicationButton.textContent = 'Logged';
+          medicationButton.disabled = true;
+          medicationButton.classList.add('is-done');
+        }
+
+        document.querySelectorAll('[data-action^="task-"]').forEach((button, index) => {
+          const status = state.tasks[index];
+          const row = button.closest('.compact-row');
+          const labels = index === 0
+            ? { done: 'Undo', next: 'Done' }
+            : index === 1
+              ? { next: 'Next', queued: 'Undo' }
+              : { later: 'Later' };
+          button.textContent = labels[status] || (status.startsWith('Scheduled ') ? 'Scheduled' : status);
+          button.title = status.startsWith('Scheduled ') ? status : '';
+          button.classList.toggle('done-tag', status === 'done');
+          button.classList.toggle('pending-tag', status !== 'done');
+          row.classList.toggle('is-complete', status === 'done');
+          button.setAttribute('aria-pressed', String(status === 'done' || status === 'queued'));
+        });
+
+        const completedTasks = (state.medicationTaken ? 1 : 0) + state.tasks.filter((status) => status === 'done').length;
+        document.querySelector('[data-completed-count]').textContent = `${completedTasks}/4`;
+
+        document.querySelectorAll('.alert-item').forEach((alert) => {
+          alert.classList.toggle('is-read', state.alertsRead);
+        });
+        document.querySelector('.alert-count').hidden = state.alertsRead;
+      }
 
       function showScreen(name) {
         screens.forEach((screen) => {
@@ -333,13 +407,9 @@
         });
 
         navItems.forEach((button) => {
-          const isNav = button.classList.contains('nav-item') || button.classList.contains('icon-button');
-          if (isNav && button.dataset.screen === name) {
-            button.classList.add('active');
-          } else if (isNav) {
-            button.classList.remove('active');
-          }
+          button.classList.toggle('active', button.dataset.screen === name);
         });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
       function showToast(message) {
@@ -349,40 +419,179 @@
         showToast.timeoutId = setTimeout(() => toast.classList.remove('show'), 1800);
       }
 
-      document.querySelectorAll('[data-screen]').forEach((button) => {
-        button.addEventListener('click', (event) => {
-          const target = button.dataset.screen;
-          if (target) {
-            showScreen(target);
-          }
+      function openDialog(title, content, onSave, saveLabel = 'Save') {
+        dialogTitle.textContent = title;
+        dialogContent.replaceChildren(content);
+        dialogSave.textContent = saveLabel;
+        dialogSave.hidden = !onSave;
+        dialogSave.dataset.enabled = String(Boolean(onSave));
+        dialog.showModal();
+        dialogForm.onsubmit = (event) => {
+          if (event.submitter?.value !== 'save' || !onSave) return;
+          event.preventDefault();
+          onSave();
+          dialog.close();
+        };
+      }
+
+      function openSetting(setting) {
+        const labels = {
+          'care-plan': ['Care plan', 'Daily care notes'],
+          'health-records': ['Health records', 'Health record notes'],
+          notifications: ['Notifications', 'Reminder preference'],
+          'emergency-contacts': ['Emergency contacts', 'Primary contact']
+        };
+        const [title, label] = labels[setting];
+        const field = document.createElement(setting === 'notifications' ? 'select' : 'textarea');
+        field.className = 'dialog-input';
+        field.name = 'value';
+        field.setAttribute('aria-label', label);
+
+        if (setting === 'notifications') {
+          [['all', 'All reminders'], ['important', 'Important only'], ['off', 'Off']].forEach(([value, text]) => {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = text;
+            field.append(option);
+          });
+          field.value = state.profile[setting] || 'all';
+        } else {
+          field.rows = 4;
+          field.placeholder = label;
+          field.value = state.profile[setting] || '';
+        }
+
+        const labelElement = document.createElement('label');
+        labelElement.className = 'dialog-label';
+        labelElement.textContent = label;
+        labelElement.append(field);
+        openDialog(title, labelElement, () => {
+          state.profile[setting] = field.value;
+          saveState();
+          showToast(`${title} saved`);
         });
+      }
+
+      function exportCalendarEvent(button) {
+        const date = button.dataset.date;
+        const time = button.dataset.time;
+        const eventText = button.dataset.event.replaceAll(',', '\\,');
+        const description = button.dataset.description.replaceAll(',', '\\,');
+        const calendarData = [
+          'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Leopard Care//Care Calendar//EN',
+          'BEGIN:VEVENT', `UID:${date}-${time}@leopard-care`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}`,
+          `DTSTART:${date}T${time}`, `SUMMARY:${eventText}`, `DESCRIPTION:${description}`,
+          'END:VEVENT', 'END:VCALENDAR'
+        ].join('\r\n');
+        const file = new Blob([calendarData], { type: 'text/calendar;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(file);
+        link.download = `${button.dataset.event.toLowerCase().replaceAll(' ', '-')}.ics`;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+        showToast('Calendar event downloaded');
+      }
+
+      function composeMessage() {
+        const phoneNumber = '+15035550191';
+        const recipient = document.createElement('p');
+        recipient.className = 'composer-recipient';
+        recipient.textContent = `To Sarah Johnson · ${phoneNumber}`;
+
+        const field = document.createElement('textarea');
+        field.className = 'dialog-input';
+        field.rows = 5;
+        field.required = true;
+        field.maxLength = 500;
+        field.placeholder = 'Write a message';
+        field.setAttribute('aria-label', 'Message to Sarah Johnson');
+        field.addEventListener('input', () => {
+          field.setCustomValidity(field.value.trim() ? '' : 'Enter a message.');
+        });
+
+        const label = document.createElement('label');
+        label.className = 'dialog-label';
+        label.textContent = 'Message';
+        label.append(field);
+
+        const content = document.createElement('div');
+        content.className = 'message-composer';
+        content.append(recipient, label);
+        openDialog('Message Sarah', content, () => {
+          const separator = /iPad|iPhone|iPod/.test(navigator.userAgent) ? '&' : '?';
+          const link = document.createElement('a');
+          link.href = `sms:${phoneNumber}${separator}body=${encodeURIComponent(field.value.trim())}`;
+          link.click();
+          showToast('Message opened in your SMS app');
+        }, 'Open Messages');
+        field.focus();
+      }
+
+      document.addEventListener('click', (event) => {
+        const button = event.target.closest('button');
+        if (!button) return;
+
+        if (button.dataset.screen) {
+          showScreen(button.dataset.screen);
+          return;
+        }
+
+        if (button.dataset.setting) {
+          openSetting(button.dataset.setting);
+          return;
+        }
+
+        if (button.classList.contains('calendar-action')) {
+          exportCalendarEvent(button);
+          return;
+        }
+
+        const action = button.dataset.action;
+        if (action === 'medication') {
+          state.medicationTaken = true;
+          saveState();
+          syncStateToPage();
+          showToast('Medication recorded');
+        } else if (action === 'task-done') {
+          const wasComplete = state.tasks[0] === 'done';
+          state.tasks[0] = wasComplete ? 'next' : 'done';
+          saveState();
+          syncStateToPage();
+          showToast(wasComplete ? 'Bath routine reopened' : 'Bath routine marked done');
+        } else if (action === 'task-next') {
+          state.tasks[1] = state.tasks[1] === 'queued' ? 'next' : 'queued';
+          saveState();
+          syncStateToPage();
+          showToast(state.tasks[1] === 'queued' ? 'Lunch prep added to queue' : 'Lunch prep removed from queue');
+        } else if (action === 'task-later') {
+          const field = document.createElement('input');
+          field.className = 'dialog-input';
+          field.type = 'datetime-local';
+          field.required = true;
+          field.setAttribute('aria-label', 'New task date and time');
+          const label = document.createElement('label');
+          label.className = 'dialog-label';
+          label.textContent = 'Reschedule for';
+          label.append(field);
+          openDialog('Reschedule walk & stretch', label, () => {
+            state.tasks[2] = `Scheduled ${new Date(field.value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}`;
+            saveState();
+            syncStateToPage();
+            showToast('Task rescheduled');
+          }, 'Reschedule');
+        } else if (action === 'call') {
+          window.location.href = 'tel:+15035550191';
+        } else if (action === 'message') {
+          composeMessage();
+        } else if (action === 'mark-alerts-read') {
+          state.alertsRead = true;
+          saveState();
+          syncStateToPage();
+          showToast('Notifications marked as read');
+        }
       });
 
-      document.querySelectorAll('[data-action]').forEach((button) => {
-        button.addEventListener('click', () => {
-          const action = button.dataset.action;
-          if (action === 'medication') {
-            button.textContent = 'Logged';
-            button.disabled = true;
-            button.classList.add('is-done');
-            showToast('Medication confirmed');
-          } else if (action === 'call') {
-            showToast('Calling Sarah...');
-          } else if (action === 'message') {
-            showToast('Message queued');
-          } else if (action === 'task-done') {
-            button.textContent = 'Done';
-            button.classList.add('done-tag');
-            showToast('Task completed');
-          } else if (action === 'task-next') {
-            button.textContent = 'Queued';
-            showToast('Task moved to next');
-          } else if (action === 'task-later') {
-            button.textContent = 'Later';
-            showToast('Task rescheduled');
-          }
-        });
-      });
+      syncStateToPage();
     </script>
   </body>
 </html>

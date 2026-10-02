@@ -33,6 +33,12 @@ body {
 
 button {
   font: inherit;
+  cursor: pointer;
+}
+
+button:focus-visible {
+  outline: 3px solid rgba(15, 92, 92, 0.38);
+  outline-offset: 2px;
 }
 
 .page-shell {
@@ -154,6 +160,10 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.alert-count[hidden] {
+  display: none;
 }
 
 .content {
@@ -377,6 +387,11 @@ button {
 .compact-row:first-child {
   border-top: 0;
   padding-top: 0;
+}
+
+.compact-row.is-complete .task-copy h3 {
+  color: var(--label);
+  text-decoration: line-through;
 }
 
 .done-tag {
@@ -636,6 +651,15 @@ button {
   white-space: nowrap;
 }
 
+.calendar-action {
+  border: 0;
+  border-radius: 999px;
+  padding: 7px 9px;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
 .tag-teal {
   background: rgba(15, 92, 92, 0.1);
   color: var(--teal);
@@ -656,6 +680,10 @@ button {
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+}
+
+.alert-item.is-read {
+  opacity: 0.58;
 }
 
 .alert-item h3 {
@@ -764,6 +792,11 @@ button {
   text-align: left;
 }
 
+.settings-row:hover,
+.text-button:hover {
+  color: var(--teal-deep);
+}
+
 .settings-row:last-child {
   border-bottom: 0;
 }
@@ -776,6 +809,98 @@ button {
   stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.app-dialog {
+  width: min(340px, calc(100vw - 32px));
+  max-width: none;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 20px;
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: 0 24px 60px rgba(16, 37, 44, 0.25);
+}
+
+.app-dialog::backdrop {
+  background: rgba(22, 34, 34, 0.38);
+  backdrop-filter: blur(2px);
+}
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.dialog-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dialog-heading h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.dialog-close {
+  font-size: 24px;
+}
+
+.dialog-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--label);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.composer-recipient {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--teal-deep);
+  background: rgba(15, 92, 92, 0.1);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.dialog-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  color: var(--text);
+  background: white;
+  font: inherit;
+  font-weight: 600;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.dialog-actions .primary-action {
+  min-width: 84px;
+  height: 40px;
+}
+
+.secondary-button {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0 14px;
+  color: var(--text);
+  background: white;
+  font-weight: 800;
+}
+
+.primary-action:disabled {
+  cursor: default;
 }
 
 .toast {
