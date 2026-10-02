@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leopard Care</title>
+    <meta
+      name="description"
+      content="Leopard Care app dashboard concept with warm cream palette and teal accents."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <div class="app-frame">
+        <header class="topbar" aria-label="Leopard Care top bar">
+          <div class="brand-group">
+            <span class="brand-name">Leopard Care</span>
+            <span class="brand-badge" aria-hidden="true"></span>
+          </div>
+
+          <div class="top-actions" aria-label="App actions">
+            <button class="icon-button" data-screen="calendar" aria-label="Calendar">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 2v2M17 2v2M4 9h16M5 5h14a1 1 0 0 1 1 1v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1Z" />
+              </svg>
+            </button>
+            <button class="icon-button" data-screen="profile" aria-label="Settings">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v3M12 18v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M3 12h3M18 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" />
+                <circle cx="12" cy="12" r="3.5" />
+              </svg>
+            </button>
+            <button class="icon-button" data-screen="profile" aria-label="Call">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3.08 4.18 2 2 0 0 1 5.08 2h3a2 2 0 0 1 2 1.72l.42 2.18a2 2 0 0 1-.54 1.8L8 9.91a16 16 0 0 0 6.09 6.09l2.21-2.01a2 2 0 0 1 1.8-.54l2.18.42A2 2 0 0 1 22 16.92Z" />
+              </svg>
+            </button>
+            <button class="icon-button alert-button" data-screen="alerts" aria-label="Notifications">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 8a6 6 0 1 1 12 0v4.5l1.6 3.2a1 1 0 0 1-.9 1.5H5.3a1 1 0 0 1-.9-1.5L6 12.5V8Zm3 10a3 3 0 0 0 6 0" />
+              </svg>
+              <span class="alert-count">1</span>
+            </button>
+          </div>
+        </header>
+
+        <main class="content">
+          <section class="screen active" data-screen="home">
+            <div class="welcome-card card">
+              <div class="card-header-row">
+                <div class="label-chip">Care Overview</div>
+                <span class="mini-tag">4 tasks</span>
+              </div>
+              <h1>Good morning, Marta</h1>
+
+              <div class="stats-grid">
+                <div class="stat-box">
+                  <span class="stat-label">Adherence</span>
+                  <strong>82%</strong>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Hydration</span>
+                  <strong>6/8</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="card reminder-card">
+              <div class="section-title-row">
+                <span class="eyebrow">Reminder</span>
+                <button class="text-button" data-screen="calendar">View all</button>
+              </div>
+
+              <div class="task-item primary-row">
+                <div class="task-icon icon-teal">💊</div>
+                <div class="task-copy">
+                  <h2>Morning medication</h2>
+                  <p>8:30 AM • With breakfast</p>
+                </div>
+                <button class="primary-action" data-action="medication">Taken</button>
+              </div>
+
+              <div class="supply-wrap">
+                <div class="supply-header">
+                  <span>Supplies</span>
+                  <span>3/4 left</span>
+                </div>
+                <div class="progress-track" aria-label="Supply progress">
+                  <span class="progress-fill" style="width: 75%"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card task-card">
+              <div class="section-title-row">
+                <span class="eyebrow">Today's care</span>
+                <span class="status-chip">Today</span>
+              </div>
+
+              <div class="task-list">
+                <div class="task-item compact-row">
+                  <div class="task-icon icon-soft">🧼</div>
+                  <div class="task-copy">
+                    <h3>Bath routine</h3>
+                    <p>9:00 AM</p>
+                  </div>
+                  <button class="mini-tag done-tag" data-action="task-done">Done</button>
+                </div>
+
+                <div class="task-item compact-row">
+                  <div class="task-icon icon-soft">🥗</div>
+                  <div class="task-copy">
+                    <h3>Lunch prep</h3>
+                    <p>12:30 PM</p>
+                  </div>
+                  <button class="mini-tag pending-tag" data-action="task-next">Next</button>
+                </div>
+
+                <div class="task-item compact-row">
+                  <div class="task-icon icon-soft">🚶</div>
+                  <div class="task-copy">
+                    <h3>Walk & stretch</h3>
+                    <p>3:15 PM</p>
+                  </div>
+                  <button class="mini-tag pending-tag" data-action="task-later">Later</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card alert-card">
+              <div class="alert-heading">
+                <span class="alert-label">Needs attention</span>
+                <span class="alert-time">Now</span>
+              </div>
+              <h3>Visiting nurse update</h3>
+              <p>Check blood pressure log before evening check-in.</p>
+            </div>
+
+            <div class="card contact-card">
+              <div class="contact-header">
+                <div>
+                  <h3>Sarah Johnson</h3>
+                  <p>Daughter • +1 (503) 555-0191</p>
+                </div>
+              </div>
+              <div class="contact-actions">
+                <button class="action-button action-primary" data-action="call">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3.08 4.18 2 2 0 0 1 5.08 2h3a2 2 0 0 1 2 1.72l.42 2.18a2 2 0 0 1-.54 1.8L8 9.91a16 16 0 0 0 6.09 6.09l2.21-2.01a2 2 0 0 1 1.8-.54l2.18.42A2 2 0 0 1 22 16.92Z" /></svg>
+                  Call
+                </button>
+                <button class="action-button action-amber" data-action="message">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9A2.5 2.5 0 0 1 17.5 17H9l-5 4v-15.5Z" /></svg>
+                  Message
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="calendar">
+            <div class="screen-header card">
+              <div>
+                <p class="eyebrow">Schedule</p>
+                <h2>Care calendar</h2>
+              </div>
+              <button class="icon-button inline-icon" data-screen="home" aria-label="Back to home">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
+              </button>
+            </div>
+
+            <div class="schedule-list">
+              <div class="card schedule-card">
+                <div class="date-block">
+                  <span class="month">OCT</span>
+                  <strong>02</strong>
+                </div>
+                <div class="schedule-copy">
+                  <h3>Medication review</h3>
+                  <p>8:30 AM • Dr. Nguyen</p>
+                </div>
+                <span class="schedule-tag tag-teal">Confirmed</span>
+              </div>
+
+              <div class="card schedule-card">
+                <div class="date-block amber">
+                  <span class="month">OCT</span>
+                  <strong>03</strong>
+                </div>
+                <div class="schedule-copy">
+                  <h3>Physical therapy</h3>
+                  <p>10:00 AM • Home visit</p>
+                </div>
+                <span class="schedule-tag tag-amber">Next</span>
+              </div>
+
+              <div class="card schedule-card">
+                <div class="date-block red">
+                  <span class="month">OCT</span>
+                  <strong>05</strong>
+                </div>
+                <div class="schedule-copy">
+                  <h3>Care team meeting</h3>
+                  <p>1:30 PM • Video call</p>
+                </div>
+                <span class="schedule-tag tag-red">Invite</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="alerts">
+            <div class="screen-header card">
+              <div>
+                <p class="eyebrow">Alerts</p>
+                <h2>Notifications</h2>
+              </div>
+              <button class="icon-button inline-icon" data-screen="home" aria-label="Back to home">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
+              </button>
+            </div>
+
+            <div class="alert-stack">
+              <div class="card alert-item alert-critical">
+                <div>
+                  <h3>Urgent medication update</h3>
+                  <p>Pharmacist flagged refill timing.</p>
+                </div>
+                <span>12 min ago</span>
+              </div>
+
+              <div class="card alert-item">
+                <div>
+                  <h3>Hydration reminder</h3>
+                  <p>Two glasses left before bedtime.</p>
+                </div>
+                <span>35 min ago</span>
+              </div>
+
+              <div class="card alert-item">
+                <div>
+                  <h3>Family message</h3>
+                  <p>Sarah shared the weekly care plan.</p>
+                </div>
+                <span>1 hr ago</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="screen" data-screen="profile">
+            <div class="screen-header card">
+              <div>
+                <p class="eyebrow">Profile</p>
+                <h2>Care circle</h2>
+              </div>
+              <button class="icon-button inline-icon" data-screen="home" aria-label="Back to home">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
+              </button>
+            </div>
+
+            <div class="card profile-card">
+              <div class="profile-heading">
+                <div class="avatar">MJ</div>
+                <div>
+                  <h3>Marta Johnson</h3>
+                  <p>Resident • Room 210</p>
+                </div>
+              </div>
+              <div class="profile-stats">
+                <div>
+                  <strong>3</strong>
+                  <span>Caregivers</span>
+                </div>
+                <div>
+                  <strong>6.4k</strong>
+                  <span>Steps</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card settings-card">
+              <button class="settings-row" data-screen="home">
+                <span>Care plan</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              </button>
+              <button class="settings-row" data-screen="home">
+                <span>Health records</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              </button>
+              <button class="settings-row" data-screen="home">
+                <span>Notifications</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              </button>
+              <button class="settings-row" data-screen="home">
+                <span>Emergency contacts</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              </button>
+            </div>
+          </section>
+        </main>
+
+        <nav class="bottom-nav" aria-label="Main navigation">
+          <button class="nav-item active" data-screen="home" aria-label="Home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-9.5Z" /></svg>
+          </button>
+          <button class="nav-item" data-screen="calendar" aria-label="Calendar">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v2M17 2v2M4 9h16M5 5h14a1 1 0 0 1 1 1v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1Z" /></svg>
+          </button>
+          <button class="nav-item" data-screen="alerts" aria-label="Alerts">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0v4.5l1.6 3.2a1 1 0 0 1-.9 1.5H5.3a1 1 0 0 1-.9-1.5L6 12.5V8Zm3 10a3 3 0 0 0 6 0" /></svg>
+          </button>
+          <button class="nav-item" data-screen="profile" aria-label="Profile">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 20c1.6-3 4.4-4.5 8-4.5s6.4 1.5 8 4.5" /></svg>
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" aria-live="polite">Saved</div>
+
+    <script>
+      const screens = document.querySelectorAll('.screen');
+      const navItems = document.querySelectorAll('[data-screen]');
+      const toast = document.getElementById('toast');
+
+      function showScreen(name) {
+        screens.forEach((screen) => {
+          screen.classList.toggle('active', screen.dataset.screen === name);
+        });
+
+        navItems.forEach((button) => {
+          const isNav = button.classList.contains('nav-item') || button.classList.contains('icon-button');
+          if (isNav && button.dataset.screen === name) {
+            button.classList.add('active');
+          } else if (isNav) {
+            button.classList.remove('active');
+          }
+        });
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(showToast.timeoutId);
+        showToast.timeoutId = setTimeout(() => toast.classList.remove('show'), 1800);
+      }
+
+      document.querySelectorAll('[data-screen]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          const target = button.dataset.screen;
+          if (target) {
+            showScreen(target);
+          }
+        });
+      });
+
+      document.querySelectorAll('[data-action]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const action = button.dataset.action;
+          if (action === 'medication') {
+            button.textContent = 'Logged';
+            button.disabled = true;
+            button.classList.add('is-done');
+            showToast('Medication confirmed');
+          } else if (action === 'call') {
+            showToast('Calling Sarah...');
+          } else if (action === 'message') {
+            showToast('Message queued');
+          } else if (action === 'task-done') {
+            button.textContent = 'Done';
+            button.classList.add('done-tag');
+            showToast('Task completed');
+          } else if (action === 'task-next') {
+            button.textContent = 'Queued';
+            showToast('Task moved to next');
+          } else if (action === 'task-later') {
+            button.textContent = 'Later';
+            showToast('Task rescheduled');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
