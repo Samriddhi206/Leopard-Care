@@ -56,7 +56,7 @@
             <div class="welcome-card card">
               <div class="card-header-row">
                 <div class="label-chip">Care Overview</div>
-                <span class="mini-tag">4 tasks</span>
+                <span class="mini-tag" data-task-total>6 tasks</span>
               </div>
               <h1>Good morning, Marta</h1>
 
@@ -67,7 +67,12 @@
                 </div>
                 <div class="stat-box">
                   <span class="stat-label">Hydration</span>
-                  <strong>6/8</strong>
+                  <div class="hydration-value-row">
+                    <strong data-hydration-count>6/8</strong>
+                    <button class="icon-button hydration-add" data-action="hydration" aria-label="Log a glass of water" title="Log a glass of water">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -104,34 +109,7 @@
                 <span class="status-chip">Today</span>
               </div>
 
-              <div class="task-list">
-                <div class="task-item compact-row">
-                  <div class="task-icon icon-soft">🧼</div>
-                  <div class="task-copy">
-                    <h3>Bath routine</h3>
-                    <p>9:00 AM</p>
-                  </div>
-                  <button class="mini-tag done-tag" data-action="task-done" aria-pressed="true">Undo</button>
-                </div>
-
-                <div class="task-item compact-row">
-                  <div class="task-icon icon-soft">🥗</div>
-                  <div class="task-copy">
-                    <h3>Lunch prep</h3>
-                    <p>12:30 PM</p>
-                  </div>
-                  <button class="mini-tag pending-tag" data-action="task-next">Next</button>
-                </div>
-
-                <div class="task-item compact-row">
-                  <div class="task-icon icon-soft">🚶</div>
-                  <div class="task-copy">
-                    <h3>Walk & stretch</h3>
-                    <p>3:15 PM</p>
-                  </div>
-                  <button class="mini-tag pending-tag" data-action="task-later">Later</button>
-                </div>
-              </div>
+              <div class="task-list" data-task-list></div>
             </div>
 
             <div class="card alert-card">
@@ -151,11 +129,11 @@
                 </div>
               </div>
               <div class="contact-actions">
-                <button class="action-button action-primary" data-action="call">
+                <button class="action-button action-primary" data-action="call" data-contact-name="Sarah Johnson" data-phone="+15035550191">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3.08 4.18 2 2 0 0 1 5.08 2h3a2 2 0 0 1 2 1.72l.42 2.18a2 2 0 0 1-.54 1.8L8 9.91a16 16 0 0 0 6.09 6.09l2.21-2.01a2 2 0 0 1 1.8-.54l2.18.42A2 2 0 0 1 22 16.92Z" /></svg>
                   Call
                 </button>
-                <button class="action-button action-amber" data-action="message">
+                <button class="action-button action-amber" data-action="message" data-contact-name="Sarah Johnson" data-phone="+15035550191">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9A2.5 2.5 0 0 1 17.5 17H9l-5 4v-15.5Z" /></svg>
                   Message
                 </button>
@@ -214,42 +192,76 @@
           </section>
 
           <section class="screen" data-screen="alerts">
-            <div class="screen-header card">
+            <div class="notifications-heading">
               <div>
-                <p class="eyebrow">Alerts</p>
+                <p class="eyebrow">Care feed</p>
                 <h2>Notifications</h2>
+                <p class="notifications-subtitle">Updates for Marta Johnson</p>
               </div>
-              <button class="text-button" data-action="mark-alerts-read">Mark all read</button>
               <button class="icon-button inline-icon" data-screen="home" aria-label="Back to home">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
               </button>
             </div>
 
+            <div class="notification-toolbar">
+              <div>
+                <strong data-unread-count>4 unread</strong>
+                <span>Care updates</span>
+              </div>
+              <button class="text-button" data-action="mark-alerts-read">Mark all read</button>
+            </div>
+
+            <div class="notification-filters" role="group" aria-label="Filter notifications">
+              <button class="filter-button active" data-alert-filter="all" aria-pressed="true">All</button>
+              <button class="filter-button" data-alert-filter="unread" aria-pressed="false">Unread</button>
+            </div>
+
+            <p class="notification-day">Today</p>
             <div class="alert-stack">
-              <div class="card alert-item alert-critical">
-                <div>
+              <article class="card alert-item alert-critical" data-notification data-notification-id="medication">
+                <div class="notification-icon medication-icon" aria-hidden="true">Rx</div>
+                <div class="notification-copy">
+                  <div class="notification-meta"><span class="notification-category">Medication</span><time>12 min ago</time></div>
                   <h3>Urgent medication update</h3>
                   <p>Pharmacist flagged refill timing.</p>
                 </div>
-                <span>12 min ago</span>
-              </div>
+              </article>
 
-              <div class="card alert-item">
-                <div>
+              <article class="card alert-item hydration-alert" data-notification data-notification-id="hydration">
+                <div class="notification-icon hydration-icon" aria-hidden="true">H₂O</div>
+                <div class="notification-copy">
+                  <div class="notification-meta"><span class="notification-category">Hydration</span><time>35 min ago</time></div>
                   <h3>Hydration reminder</h3>
                   <p>Two glasses left before bedtime.</p>
                 </div>
-                <span>35 min ago</span>
-              </div>
+              </article>
 
-              <div class="card alert-item">
-                <div>
+              <article class="card alert-item family-alert" data-notification data-notification-id="family">
+                <div class="notification-icon family-icon" aria-hidden="true">SJ</div>
+                <div class="notification-copy">
+                  <div class="notification-meta"><span class="notification-category">Care circle</span><time>1 hr ago</time></div>
                   <h3>Family message</h3>
                   <p>Sarah shared the weekly care plan.</p>
                 </div>
-                <span>1 hr ago</span>
-              </div>
+              </article>
+
+              <article class="card alert-item battery-alert" data-notification data-notification-id="battery">
+                <div class="notification-icon battery-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M3 8h16v9H3zM21 11v3M6 11h4v3H6z" /></svg>
+                </div>
+                <div class="notification-copy">
+                  <div class="notification-meta"><span class="notification-category">Device reminder</span><time data-battery-level>Not checked</time></div>
+                  <h3>Phone battery reminder</h3>
+                  <p data-battery-copy>Check your phone charge before the next care visit.</p>
+                  <div class="battery-meter" aria-label="Phone battery level"><span data-battery-fill></span></div>
+                  <div class="battery-actions">
+                    <button class="mini-tag pending-tag" data-action="check-battery">Check now</button>
+                    <button class="mini-tag done-tag" data-action="toggle-battery">Enable reminder</button>
+                  </div>
+                </div>
+              </article>
             </div>
+            <p class="notification-empty" data-notification-empty hidden>No unread notifications.</p>
           </section>
 
           <section class="screen" data-screen="profile">
@@ -273,7 +285,7 @@
               </div>
               <div class="profile-stats">
                 <div>
-                  <strong>3</strong>
+                  <strong data-caregiver-count>3</strong>
                   <span>Caregivers</span>
                 </div>
                 <div>
@@ -281,6 +293,20 @@
                   <span>Steps</span>
                 </div>
               </div>
+            </div>
+
+            <div class="caregiver-panel">
+              <div class="caregiver-panel-heading">
+                <div>
+                  <p class="eyebrow">Care circle</p>
+                  <h3>Caregivers</h3>
+                </div>
+                <button class="primary-action add-caregiver-button" data-action="add-caregiver">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                  Add caregiver
+                </button>
+              </div>
+              <div class="caregiver-list" data-caregiver-list></div>
             </div>
 
             <div class="card settings-card">
@@ -299,6 +325,10 @@
               <button class="settings-row" data-setting="emergency-contacts">
                 <span>Emergency contacts</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              </button>
+              <button class="settings-row reset-demo-row" data-action="reset-demo">
+                <span>Reset demo data</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8m0-5v5h5" /></svg>
               </button>
             </div>
           </section>
@@ -346,19 +376,48 @@
       const dialogContent = document.getElementById('dialog-content');
       const dialogSave = document.getElementById('dialog-save');
       const storageKey = 'leopard-care-state';
+      const taskCatalog = [
+        { id: 'bath', title: 'Bath routine', time: '9:00 AM', icon: '🧼', mode: 'queue' },
+        { id: 'lunch', title: 'Lunch prep', time: '12:30 PM', icon: '🥗', mode: 'queue' },
+        { id: 'walk', title: 'Walk & stretch', time: '3:15 PM', icon: '🚶', mode: 'schedule' },
+        { id: 'blood-pressure', title: 'Blood pressure log', time: '6:00 PM', icon: '🩺', mode: 'queue' },
+        { id: 'evening-medication', title: 'Evening medication', time: '8:00 PM', icon: '💊', mode: 'queue' },
+        { id: 'bedtime', title: 'Prepare for bed', time: '9:00 PM', icon: '🌙', mode: 'schedule' }
+      ];
+      const notificationIds = ['medication', 'hydration', 'family', 'battery'];
+      let alertFilter = 'all';
+      let batteryManager = null;
+      let batteryEventsBound = false;
+      let batteryWarningShown = false;
       const defaultState = {
         medicationTaken: false,
-        tasks: ['done', 'next', 'later'],
+        tasks: ['done', 'next', 'later', 'next', 'next', 'next'],
+        hydration: 6,
         alertsRead: false,
+        readNotifications: [],
+        batteryReminderEnabled: false,
+        caregivers: [],
         profile: {}
       };
 
-      let state;
+      let savedState;
       try {
-        state = { ...defaultState, ...JSON.parse(localStorage.getItem(storageKey) || '{}') };
+        savedState = JSON.parse(localStorage.getItem(storageKey) || '{}');
       } catch {
-        state = { ...defaultState };
+        savedState = {};
       }
+      const state = {
+        ...defaultState,
+        ...savedState,
+        tasks: taskCatalog.map((task, index) => savedState.tasks?.[index] || defaultState.tasks[index]),
+        hydration: Number.isFinite(Number(savedState.hydration)) ? Number(savedState.hydration) : defaultState.hydration,
+        readNotifications: Array.isArray(savedState.readNotifications)
+          ? savedState.readNotifications
+          : savedState.alertsRead ? [...notificationIds] : [],
+        batteryReminderEnabled: Boolean(savedState.batteryReminderEnabled),
+        caregivers: Array.isArray(savedState.caregivers) ? savedState.caregivers : [],
+        profile: savedState.profile || {}
+      };
 
       function saveState() {
         try {
@@ -368,37 +427,201 @@
         }
       }
 
-      function syncStateToPage() {
-        const medicationButton = document.querySelector('[data-action="medication"]');
-        if (state.medicationTaken) {
-          medicationButton.textContent = 'Logged';
-          medicationButton.disabled = true;
-          medicationButton.classList.add('is-done');
+      function renderTasks() {
+        const taskList = document.querySelector('[data-task-list]');
+        const openTasks = taskCatalog
+          .map((task, index) => ({ ...task, index, status: state.tasks[index] }))
+          .filter((task) => task.status !== 'done')
+          .slice(0, 3);
+        taskList.replaceChildren();
+
+        if (openTasks.length === 0) {
+          const emptyState = document.createElement('p');
+          emptyState.className = 'task-empty';
+          emptyState.textContent = 'All caught up';
+          taskList.append(emptyState);
+          return;
         }
 
-        document.querySelectorAll('[data-action^="task-"]').forEach((button, index) => {
-          const status = state.tasks[index];
-          const row = button.closest('.compact-row');
-          const labels = index === 0
-            ? { done: 'Undo', next: 'Done' }
-            : index === 1
-              ? { next: 'Next', queued: 'Undo' }
-              : { later: 'Later' };
-          button.textContent = labels[status] || (status.startsWith('Scheduled ') ? 'Scheduled' : status);
-          button.title = status.startsWith('Scheduled ') ? status : '';
-          button.classList.toggle('done-tag', status === 'done');
-          button.classList.toggle('pending-tag', status !== 'done');
-          row.classList.toggle('is-complete', status === 'done');
-          button.setAttribute('aria-pressed', String(status === 'done' || status === 'queued'));
-        });
+        openTasks.forEach((task) => {
+          const row = document.createElement('div');
+          row.className = 'task-item compact-row';
 
+          const icon = document.createElement('div');
+          icon.className = 'task-icon icon-soft';
+          icon.textContent = task.icon;
+
+          const copy = document.createElement('div');
+          copy.className = 'task-copy';
+          const title = document.createElement('h3');
+          title.textContent = task.title;
+          const time = document.createElement('p');
+          time.textContent = task.status.startsWith('Scheduled ') ? task.status : task.time;
+          copy.append(title, time);
+
+          const actions = document.createElement('div');
+          actions.className = 'task-actions';
+          const doneButton = document.createElement('button');
+          doneButton.className = 'mini-tag done-tag';
+          doneButton.dataset.action = 'task-done';
+          doneButton.dataset.taskIndex = task.index;
+          doneButton.textContent = 'Done';
+          doneButton.setAttribute('aria-label', `Mark ${task.title} complete`);
+          actions.append(doneButton);
+
+          const statusButton = document.createElement('button');
+          statusButton.className = 'mini-tag pending-tag';
+          statusButton.dataset.taskIndex = task.index;
+          if (task.mode === 'schedule') {
+            statusButton.dataset.action = 'task-later';
+            statusButton.textContent = task.status.startsWith('Scheduled ') ? 'Change' : 'Later';
+            statusButton.setAttribute('aria-label', `Reschedule ${task.title}`);
+          } else {
+            statusButton.dataset.action = 'task-next';
+            statusButton.textContent = task.status === 'queued' ? 'Queued' : 'Next';
+            statusButton.setAttribute('aria-pressed', String(task.status === 'queued'));
+            statusButton.setAttribute('aria-label', `${task.status === 'queued' ? 'Remove' : 'Queue'} ${task.title}`);
+          }
+          actions.append(statusButton);
+          row.append(icon, copy, actions);
+          taskList.append(row);
+        });
+      }
+
+      function updateSummary() {
         const completedTasks = (state.medicationTaken ? 1 : 0) + state.tasks.filter((status) => status === 'done').length;
-        document.querySelector('[data-completed-count]').textContent = `${completedTasks}/4`;
+        document.querySelector('[data-completed-count]').textContent = `${completedTasks}/${taskCatalog.length + 1}`;
+        document.querySelector('[data-task-total]').textContent = `${taskCatalog.length} tasks`;
+        document.querySelector('[data-hydration-count]').textContent = `${state.hydration}/8`;
+      }
 
-        document.querySelectorAll('.alert-item').forEach((alert) => {
-          alert.classList.toggle('is-read', state.alertsRead);
+      function renderCaregivers() {
+        const knownContact = { name: 'Sarah Johnson', role: 'Daughter', phone: '+15035550191' };
+        const caregivers = [knownContact, ...state.caregivers];
+        const list = document.querySelector('[data-caregiver-list]');
+        list.replaceChildren();
+
+        caregivers.forEach((caregiver) => {
+          const row = document.createElement('div');
+          row.className = 'caregiver-row';
+          const initials = caregiver.name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase();
+          const avatar = document.createElement('div');
+          avatar.className = 'caregiver-avatar';
+          avatar.textContent = initials;
+
+          const details = document.createElement('div');
+          details.className = 'caregiver-details';
+          const name = document.createElement('strong');
+          name.textContent = caregiver.name;
+          const contact = document.createElement('span');
+          contact.textContent = `${caregiver.role} · ${caregiver.phone}`;
+          details.append(name, contact);
+
+          const actions = document.createElement('div');
+          actions.className = 'caregiver-actions';
+          ['call', 'message'].forEach((action) => {
+            const button = document.createElement('button');
+            button.className = 'caregiver-action';
+            button.dataset.action = action;
+            button.dataset.contactName = caregiver.name;
+            button.dataset.phone = caregiver.phone;
+            button.textContent = action === 'call' ? 'Call' : 'Message';
+            actions.append(button);
+          });
+
+          row.append(avatar, details, actions);
+          list.append(row);
         });
-        document.querySelector('.alert-count').hidden = state.alertsRead;
+
+        document.querySelector('[data-caregiver-count]').textContent = String(3 + state.caregivers.length);
+      }
+
+      function syncNotificationState() {
+        const unreadCount = notificationIds.filter((id) => !state.readNotifications.includes(id)).length;
+        document.querySelector('[data-unread-count]').textContent = `${unreadCount} unread`;
+        const badge = document.querySelector('.alert-count');
+        badge.textContent = unreadCount;
+        badge.hidden = unreadCount === 0;
+
+        let visibleCount = 0;
+        document.querySelectorAll('[data-notification]').forEach((item) => {
+          const isRead = state.readNotifications.includes(item.dataset.notificationId);
+          item.classList.toggle('is-read', isRead);
+          item.hidden = alertFilter === 'unread' && isRead;
+          if (!item.hidden) visibleCount += 1;
+        });
+
+        document.querySelectorAll('[data-alert-filter]').forEach((button) => {
+          const isActive = button.dataset.alertFilter === alertFilter;
+          button.classList.toggle('active', isActive);
+          button.setAttribute('aria-pressed', String(isActive));
+        });
+        document.querySelector('[data-notification-empty]').hidden = visibleCount > 0;
+        const batteryButton = document.querySelector('[data-action="toggle-battery"]');
+        batteryButton.textContent = state.batteryReminderEnabled ? 'Disable reminder' : 'Enable reminder';
+        batteryButton.setAttribute('aria-pressed', String(state.batteryReminderEnabled));
+      }
+
+      function updateBatteryDisplay() {
+        if (!batteryManager) return;
+        const percent = Math.round(batteryManager.level * 100);
+        const isLow = percent <= 20 && !batteryManager.charging;
+        const batteryCard = document.querySelector('[data-notification-id="battery"]');
+        document.querySelector('[data-battery-level]').textContent = `${percent}%${batteryManager.charging ? ' · Charging' : ''}`;
+        document.querySelector('[data-battery-fill]').style.width = `${percent}%`;
+        batteryCard.classList.toggle('is-low', isLow);
+        document.querySelector('[data-battery-copy]').textContent = isLow
+          ? 'Phone battery is low. Connect a charger before the next care check-in.'
+          : batteryManager.charging
+            ? 'Phone is charging. The reminder threshold is 20%.'
+            : `Battery is at ${percent}%. Reminder threshold is 20%.`;
+
+        if (state.batteryReminderEnabled && isLow && !batteryWarningShown) {
+          batteryWarningShown = true;
+          state.readNotifications = state.readNotifications.filter((id) => id !== 'battery');
+          saveState();
+          syncNotificationState();
+          showToast('Phone battery is low');
+        } else if (!isLow) {
+          batteryWarningShown = false;
+        }
+      }
+
+      async function checkBatteryStatus() {
+        if (typeof navigator.getBattery !== 'function') {
+          document.querySelector('[data-battery-level]').textContent = 'Unavailable';
+          document.querySelector('[data-battery-copy]').textContent = 'This browser does not share battery status. Use your phone’s built-in low-battery alert.';
+          showToast('Battery status unavailable in this browser');
+          return false;
+        }
+
+        try {
+          batteryManager ||= await navigator.getBattery();
+          if (!batteryEventsBound) {
+            batteryManager.addEventListener('levelchange', updateBatteryDisplay);
+            batteryManager.addEventListener('chargingchange', updateBatteryDisplay);
+            batteryEventsBound = true;
+          }
+          updateBatteryDisplay();
+          return true;
+        } catch {
+          document.querySelector('[data-battery-level]').textContent = 'Unavailable';
+          document.querySelector('[data-battery-copy]').textContent = 'Battery status could not be read on this device.';
+          showToast('Could not read battery status');
+          return false;
+        }
+      }
+
+      function syncStateToPage() {
+        const medicationButton = document.querySelector('[data-action="medication"]');
+        medicationButton.textContent = state.medicationTaken ? 'Logged' : 'Taken';
+        medicationButton.disabled = state.medicationTaken;
+        medicationButton.classList.toggle('is-done', state.medicationTaken);
+
+        renderTasks();
+        updateSummary();
+        renderCaregivers();
+        syncNotificationState();
       }
 
       function showScreen(name) {
@@ -472,6 +695,60 @@
         });
       }
 
+      function openAddCaregiverDialog() {
+        const content = document.createElement('div');
+        content.className = 'caregiver-form';
+        const fields = {};
+        [
+          ['name', 'Name', 'text', true],
+          ['role', 'Relationship or role', 'text', false],
+          ['phone', 'Phone number', 'tel', true]
+        ].forEach(([name, labelText, type, required]) => {
+          const label = document.createElement('label');
+          label.className = 'dialog-label';
+          label.textContent = labelText;
+          const input = document.createElement('input');
+          input.className = 'dialog-input';
+          input.name = name;
+          input.type = type;
+          input.required = required;
+          label.append(input);
+          content.append(label);
+          fields[name] = input;
+        });
+
+        openDialog('Add caregiver', content, () => {
+          state.caregivers.push({
+            name: fields.name.value.trim(),
+            role: fields.role.value.trim() || 'Caregiver',
+            phone: fields.phone.value.trim()
+          });
+          saveState();
+          renderCaregivers();
+          showToast('Caregiver added');
+        }, 'Add caregiver');
+        fields.name.focus();
+      }
+
+      function openResetDialog() {
+        const message = document.createElement('p');
+        message.className = 'reset-dialog-copy';
+        message.textContent = 'This clears saved task progress, hydration, notification settings, and added caregivers.';
+        openDialog('Reset demo data?', message, () => {
+          localStorage.removeItem(storageKey);
+          window.location.reload();
+        }, 'Reset demo');
+      }
+
+      async function toggleBatteryReminder() {
+        if (!await checkBatteryStatus()) return;
+        state.batteryReminderEnabled = !state.batteryReminderEnabled;
+        saveState();
+        syncNotificationState();
+        if (state.batteryReminderEnabled) updateBatteryDisplay();
+        showToast(state.batteryReminderEnabled ? 'Low-battery reminder enabled' : 'Low-battery reminder disabled');
+      }
+
       function exportCalendarEvent(button) {
         const date = button.dataset.date;
         const time = button.dataset.time;
@@ -492,11 +769,10 @@
         showToast('Calendar event downloaded');
       }
 
-      function composeMessage() {
-        const phoneNumber = '+15035550191';
+      function composeMessage(contactName = 'Sarah Johnson', phoneNumber = '+15035550191') {
         const recipient = document.createElement('p');
         recipient.className = 'composer-recipient';
-        recipient.textContent = `To Sarah Johnson · ${phoneNumber}`;
+        recipient.textContent = `To ${contactName} · ${phoneNumber}`;
 
         const field = document.createElement('textarea');
         field.className = 'dialog-input';
@@ -504,7 +780,7 @@
         field.required = true;
         field.maxLength = 500;
         field.placeholder = 'Write a message';
-        field.setAttribute('aria-label', 'Message to Sarah Johnson');
+        field.setAttribute('aria-label', `Message to ${contactName}`);
         field.addEventListener('input', () => {
           field.setCustomValidity(field.value.trim() ? '' : 'Enter a message.');
         });
@@ -517,7 +793,7 @@
         const content = document.createElement('div');
         content.className = 'message-composer';
         content.append(recipient, label);
-        openDialog('Message Sarah', content, () => {
+        openDialog(`Message ${contactName}`, content, () => {
           const separator = /iPad|iPhone|iPod/.test(navigator.userAgent) ? '&' : '?';
           const link = document.createElement('a');
           link.href = `sms:${phoneNumber}${separator}body=${encodeURIComponent(field.value.trim())}`;
@@ -541,6 +817,12 @@
           return;
         }
 
+        if (button.dataset.alertFilter) {
+          alertFilter = button.dataset.alertFilter;
+          syncNotificationState();
+          return;
+        }
+
         if (button.classList.contains('calendar-action')) {
           exportCalendarEvent(button);
           return;
@@ -552,18 +834,35 @@
           saveState();
           syncStateToPage();
           showToast('Medication recorded');
+        } else if (action === 'hydration') {
+          state.hydration += 1;
+          saveState();
+          updateSummary();
+          showToast(state.hydration >= 8 ? 'Hydration goal reached' : 'Water logged');
+        } else if (action === 'check-battery') {
+          checkBatteryStatus();
+        } else if (action === 'toggle-battery') {
+          toggleBatteryReminder();
+        } else if (action === 'add-caregiver') {
+          openAddCaregiverDialog();
+        } else if (action === 'reset-demo') {
+          openResetDialog();
         } else if (action === 'task-done') {
-          const wasComplete = state.tasks[0] === 'done';
-          state.tasks[0] = wasComplete ? 'next' : 'done';
+          const index = Number(button.dataset.taskIndex);
+          const title = taskCatalog[index].title;
+          state.tasks[index] = 'done';
           saveState();
           syncStateToPage();
-          showToast(wasComplete ? 'Bath routine reopened' : 'Bath routine marked done');
+          showToast(`${title} completed`);
         } else if (action === 'task-next') {
-          state.tasks[1] = state.tasks[1] === 'queued' ? 'next' : 'queued';
+          const index = Number(button.dataset.taskIndex);
+          state.tasks[index] = state.tasks[index] === 'queued' ? 'next' : 'queued';
           saveState();
           syncStateToPage();
-          showToast(state.tasks[1] === 'queued' ? 'Lunch prep added to queue' : 'Lunch prep removed from queue');
+          showToast(state.tasks[index] === 'queued' ? 'Task added to queue' : 'Task removed from queue');
         } else if (action === 'task-later') {
+          const index = Number(button.dataset.taskIndex);
+          const task = taskCatalog[index];
           const field = document.createElement('input');
           field.className = 'dialog-input';
           field.type = 'datetime-local';
@@ -573,18 +872,18 @@
           label.className = 'dialog-label';
           label.textContent = 'Reschedule for';
           label.append(field);
-          openDialog('Reschedule walk & stretch', label, () => {
-            state.tasks[2] = `Scheduled ${new Date(field.value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}`;
+          openDialog(`Reschedule ${task.title}`, label, () => {
+            state.tasks[index] = `Scheduled ${new Date(field.value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}`;
             saveState();
             syncStateToPage();
             showToast('Task rescheduled');
           }, 'Reschedule');
         } else if (action === 'call') {
-          window.location.href = 'tel:+15035550191';
+          window.location.href = `tel:${button.dataset.phone || '+15035550191'}`;
         } else if (action === 'message') {
-          composeMessage();
+          composeMessage(button.dataset.contactName, button.dataset.phone);
         } else if (action === 'mark-alerts-read') {
-          state.alertsRead = true;
+          state.readNotifications = [...notificationIds];
           saveState();
           syncStateToPage();
           showToast('Notifications marked as read');

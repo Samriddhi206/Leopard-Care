@@ -254,6 +254,25 @@ button:focus-visible {
   color: var(--text);
 }
 
+.hydration-value-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hydration-add {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: rgba(15, 92, 92, 0.1);
+}
+
+.hydration-add svg {
+  width: 18px;
+  height: 18px;
+}
+
 .reminder-card,
 .task-card,
 .alert-card,
@@ -377,6 +396,27 @@ button:focus-visible {
   flex-direction: column;
   gap: 12px;
   margin-top: 18px;
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.task-actions .mini-tag {
+  min-width: 0;
+  padding-right: 8px;
+  padding-left: 8px;
+}
+
+.task-empty {
+  margin: 0;
+  padding: 14px 0 2px;
+  color: var(--teal);
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .compact-row {
@@ -586,6 +626,88 @@ button:focus-visible {
   gap: 12px;
 }
 
+.notifications-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 2px 0;
+}
+
+.notifications-heading h2 {
+  margin: 4px 0 0;
+  font-size: 1.5rem;
+}
+
+.notifications-subtitle {
+  margin: 5px 0 0;
+  color: var(--label);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.notification-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.notification-toolbar > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.notification-toolbar strong {
+  color: var(--teal-deep);
+  font-size: 14px;
+}
+
+.notification-toolbar span {
+  color: var(--label);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.notification-filters {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(15, 92, 92, 0.08);
+  width: fit-content;
+}
+
+.filter-button {
+  min-width: 76px;
+  border: 0;
+  border-radius: 9px;
+  padding: 8px 12px;
+  color: var(--label);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.filter-button.active {
+  color: var(--teal-deep);
+  background: white;
+  box-shadow: 0 1px 4px rgba(16, 37, 44, 0.12);
+}
+
+.notification-day {
+  margin: 0 0 -6px;
+  color: var(--label);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .schedule-card {
   display: flex;
   align-items: center;
@@ -676,14 +798,91 @@ button:focus-visible {
 }
 
 .alert-item {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: start;
   gap: 12px;
+  padding: 14px;
+  border-radius: 16px;
+}
+
+.alert-item[hidden] {
+  display: none;
 }
 
 .alert-item.is-read {
   opacity: 0.58;
+}
+
+.notification-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  color: var(--teal-deep);
+  background: rgba(15, 92, 92, 0.1);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.medication-icon {
+  color: var(--red);
+  background: rgba(192, 57, 43, 0.1);
+}
+
+.hydration-icon {
+  color: #317a9e;
+  background: rgba(49, 122, 158, 0.12);
+  font-size: 10px;
+}
+
+.family-icon {
+  color: #a36f04;
+  background: rgba(224, 160, 48, 0.14);
+}
+
+.battery-icon {
+  color: var(--teal);
+  background: rgba(15, 92, 92, 0.1);
+}
+
+.battery-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.notification-copy {
+  min-width: 0;
+}
+
+.notification-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.notification-category,
+.notification-meta time {
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.notification-category {
+  color: var(--teal);
+  text-transform: uppercase;
+}
+
+.notification-meta time {
+  color: var(--label);
+  white-space: nowrap;
 }
 
 .alert-item h3 {
@@ -698,21 +897,191 @@ button:focus-visible {
   line-height: 1.5;
 }
 
-.alert-item span {
-  color: var(--label);
-  font-size: 11px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
 .alert-critical {
   border-left: 4px solid var(--red);
+}
+
+.battery-alert.is-low {
+  border-left: 4px solid var(--amber);
+}
+
+.battery-meter {
+  height: 6px;
+  margin: 10px 0 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--gray);
+}
+
+.battery-meter span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--teal);
+  transition: width 180ms ease;
+}
+
+.battery-alert.is-low .battery-meter span {
+  background: var(--red);
+}
+
+.battery-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.notification-empty {
+  margin: 0;
+  padding: 24px 12px;
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  color: var(--label);
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.notification-empty[hidden] {
+  display: none;
 }
 
 .profile-card {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.caregiver-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.caregiver-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.caregiver-panel-heading .eyebrow {
+  margin: 0;
+}
+
+.caregiver-panel-heading h3 {
+  margin: 3px 0 0;
+  font-size: 1.1rem;
+}
+
+.add-caregiver-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 11px;
+  font-size: 12px;
+}
+
+.add-caregiver-button svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.caregiver-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.caregiver-row {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.caregiver-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: white;
+  background: var(--teal);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.caregiver-details {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.caregiver-details strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.caregiver-details span {
+  overflow: hidden;
+  color: var(--label);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.caregiver-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.caregiver-action {
+  border: 0;
+  border-radius: 8px;
+  padding: 7px;
+  color: var(--teal);
+  background: rgba(15, 92, 92, 0.08);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.reset-demo-row {
+  color: var(--red);
+}
+
+.reset-demo-row svg {
+  stroke: var(--red);
+}
+
+.caregiver-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.reset-dialog-copy {
+  margin: 0;
+  color: var(--label);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .profile-heading {
