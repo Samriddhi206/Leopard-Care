@@ -91,6 +91,9 @@ function defaultPrefs(id) {
     readMissedTasks: [],
     hydration: 6,
     profile: {},
+    allergies: isMarta
+      ? [{ id: 'penicillin', name: 'Penicillin', note: 'Causes rash' }]
+      : [],
     seenActivityAt: ''
   };
 }
@@ -98,7 +101,7 @@ function defaultPrefs(id) {
 function loadPrefs(id) {
   const saved = asObject(readJson(prefsKey(id), {}));
   const loaded = { ...defaultPrefs(id) };
-  ['caregivers', 'attentionItems', 'dismissedAttention', 'alertsDisabled', 'readNotifications', 'readMissedTasks'].forEach((key) => {
+  ['caregivers', 'attentionItems', 'dismissedAttention', 'alertsDisabled', 'readNotifications', 'readMissedTasks', 'allergies'].forEach((key) => {
     if (Array.isArray(saved[key])) loaded[key] = saved[key];
   });
   if (typeof saved.selectedContactId === 'string') loaded.selectedContactId = saved.selectedContactId;
@@ -481,10 +484,10 @@ function emptyMessage(text) {
 function renderSchedule() {
   const sorted = catalog().sort(byTime);
   const controls = isCaregiver();
-  const tasks = sorted.filter((item) => !isMedication(item));
+  const tasks = sorted.filter((item) => !isMedication(item) && item.status !== 'done');
   const medications = sorted.filter(isMedication);
   document.querySelector('[data-schedule-tasks]').replaceChildren(
-    ...(tasks.length ? tasks.map((item) => buildTaskRow(item, { controls })) : [emptyMessage('No daily tasks yet')])
+    ...(tasks.length ? tasks.map((item) => buildTaskRow(item, { controls })) : [emptyMessage('No incomplete tasks')])
   );
   document.querySelector('[data-schedule-medications]').replaceChildren(
     ...(medications.length ? medications.map((item) => buildTaskRow(item, { controls })) : [emptyMessage('No medications yet')])
@@ -633,6 +636,40 @@ function renderCaregivers() {
     }));
   }
   document.querySelector('[data-caregiver-count]').textContent = String(prefs.caregivers.length);
+}
+
+function renderAllergies() {
+  const list = document.querySelector('[data-allergy-list]');
+  if (prefs.allergies.length === 0) {
+    list.replaceChildren(emptyMessage('No allergies recorded'));
+    return;
+  }
+
+  list.replaceChildren(...prefs.allergies.map((allergy) => {
+    const row = document.createElement('div');
+    row.className = 'caregiver-row';
+    const avatar = document.createElement('div');
+    avatar.className = 'caregiver-avatar';
+    avatar.textContent = '⚠️';
+    avatar.setAttribute('aria-hidden', 'true');
+
+    const details = document.createElement('div');
+    details.className = 'caregiver-details';
+    const name = document.createElement('strong');
+    name.textContent = allergy.name;
+    details.append(name);
+    if (allergy.note) {
+      const note = document.createElement('span');
+      note.textContent = allergy.note;
+      details.append(note);
+    }
+
+    const actions = document.createElement('div');
+    actions.className = 'caregiver-actions';
+    actions.append(createButton('caregiver-action caregiver-remove', 'Delete', { action: 'remove-allergy', allergyId: allergy.id }, { 'aria-label': `Delete ${allergy.name}` }));
+    row.append(avatar, details, actions);
+    return row;
+  }));
 }
 
 function selectedCaregiver() {
@@ -848,6 +885,7 @@ function syncStateToPage() {
   renderTasks();
   updateSummary();
   renderCaregivers();
+  renderAllergies();
   renderContactCard();
   renderAppointments();
   renderSchedule();
@@ -960,49 +998,29 @@ function openDialog(title, content, onSave, saveLabel = 'Save') {
 }
 
 function openSetting(setting) {
-  const labels = {
-    'care-plan': ['Care plan', 'Daily care notes'],
-    'health-records': ['Health records', 'Health record notes'],
-    notifications: ['Notifications', 'Reminder preference'],
-    'emergency-contacts': ['Emergency contacts', 'Primary contact']
-  };
-  const [title, label] = labels[setting];
-  const field = document.createElement(setting === 'notifications' ? 'select' : 'textarea');
+  if (setting !== 'notifications') return;
+
+  const field = document.createElement('select');
   field.className = 'dialog-input';
   field.name = 'value';
-  field.setAttribute('aria-label', label);
-
-  if (setting === 'notifications') {
-    [['all', 'All reminders'], ['important', 'Important only'], ['off', 'Off']].forEach(([value, text]) => {
-      const option = document.createElement('option');
-      option.value = value;
-      option.textContent = text;
-      field.append(option);
-    });
-    field.value = prefs.profile[setting] || 'all';
-  } else {
-    field.rows = 4;
-    field.placeholder = label;
-    field.value = prefs.profile[setting] || '';
-  }
+  field.setAttribute('aria-label', 'Reminder preference');
+  [['all', 'All reminders'], ['important', 'Important only'], ['off', 'Off']].forEach(([value, text]) => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = text;
+    field.append(option);
+  });
+  field.value = prefs.profile.notifications || 'all';
 
   const labelElement = document.createElement('label');
   labelElement.className = 'dialog-label';
-  labelElement.textContent = label;
+  labelElement.textContent = 'Reminder preference';
   labelElement.append(field);
 
-  // Care notes are written by the care team; patients can read them.
-  if (currentRole() === 'patient' && (setting === 'care-plan' || setting === 'health-records')) {
-    field.readOnly = true;
-    field.placeholder = 'No notes from your care team yet';
-    openDialog(title, labelElement, null);
-    return;
-  }
-
-  openDialog(title, labelElement, () => {
-    prefs.profile[setting] = field.value;
+  openDialog('Notifications', labelElement, () => {
+    prefs.profile.notifications = field.value;
     savePrefs();
-    showToast(`${title} saved`);
+    showToast('Notifications saved');
   });
 }
 
@@ -1146,6 +1164,36 @@ function openCaregiverDialog(caregiver = null) {
   fields.name.focus();
 }
 
+function openAllergyDialog() {
+  const { content, fields } = buildFormFields([
+    ['name', 'Allergy', 'text', true, '', { maxlength: '80' }],
+    ['note', 'Reaction or notes', 'text', false, '', { maxlength: '120' }]
+  ]);
+  openDialog('Add allergy', content, () => {
+    prefs.allergies.push({
+      id: `allergy-${Date.now()}`,
+      name: fields.name.value.trim(),
+      note: fields.note.value.trim()
+    });
+    savePrefs();
+    syncStateToPage();
+    showToast('Allergy added');
+  }, 'Add allergy');
+  fields.name.focus();
+}
+
+function openRemoveAllergyDialog(allergy) {
+  const message = document.createElement('p');
+  message.className = 'reset-dialog-copy';
+  message.textContent = `${allergy.name} will be removed from the allergy list.`;
+  openDialog(`Delete ${allergy.name}?`, message, () => {
+    prefs.allergies = prefs.allergies.filter((entry) => entry.id !== allergy.id);
+    savePrefs();
+    syncStateToPage();
+    showToast('Allergy removed');
+  }, 'Delete');
+}
+
 function openRemoveCaregiverDialog(caregiver) {
   const message = document.createElement('p');
   message.className = 'reset-dialog-copy';
@@ -1219,7 +1267,7 @@ function toggleAlerts(control) {
 function openResetDialog() {
   const message = document.createElement('p');
   message.className = 'reset-dialog-copy';
-  message.textContent = 'This clears what this device saved: care team, care notes, alert settings, hydration and notification settings for every patient. Schedules on the server are not changed.';
+    message.textContent = 'This clears what this device saved: care team, allergies, alert settings, hydration and notification settings for every patient. Schedules on the server are not changed.';
   openDialog('Reset demo data?', message, () => {
     Object.keys(localStorage)
       .filter((key) => key.startsWith('leopard-care-') || key === SELECTED_PATIENT_KEY)
@@ -1461,6 +1509,11 @@ document.addEventListener('click', async (event) => {
   } else if (action === 'remove-caregiver') {
     const caregiver = prefs.caregivers.find((entry) => entry.id === button.dataset.caregiverId);
     if (caregiver) openRemoveCaregiverDialog(caregiver);
+  } else if (action === 'add-allergy') {
+    openAllergyDialog();
+  } else if (action === 'remove-allergy') {
+    const allergy = prefs.allergies.find((entry) => entry.id === button.dataset.allergyId);
+    if (allergy) openRemoveAllergyDialog(allergy);
   } else if (action === 'edit-patient') {
     openPatientDialog();
   } else if (action === 'add-attention') {

@@ -1137,7 +1137,8 @@ html:not([data-role="patient"]) [data-role-only="patient"] {
   gap: 18px;
 }
 
-.caregiver-panel {
+.caregiver-panel,
+.allergy-panel {
   display: flex;
   flex-direction: column;
   gap: 12px;

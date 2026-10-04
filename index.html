@@ -203,9 +203,6 @@
                 <p class="eyebrow">Schedule</p>
                 <h2>Care schedule</h2>
               </div>
-                <button class="icon-button inline-icon" data-screen="home" aria-label="Back to home">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
-              </button>
             </div>
 
             <div class="schedule-section-heading" id="schedule-appointments">
@@ -364,21 +361,23 @@
               <div class="caregiver-list" data-caregiver-list></div>
             </div>
 
+            <div class="allergy-panel">
+              <div class="caregiver-panel-heading">
+                <div>
+                  <p class="eyebrow">Health</p>
+                  <h3>Allergies</h3>
+                </div>
+                <button class="primary-action add-caregiver-button" data-action="add-allergy">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                  Add allergy
+                </button>
+              </div>
+              <div class="caregiver-list" data-allergy-list></div>
+            </div>
+
             <div class="card settings-card">
-              <button class="settings-row" data-setting="care-plan">
-                <span>Care plan</span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
-              </button>
-              <button class="settings-row" data-setting="health-records">
-                <span>Health records</span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
-              </button>
               <button class="settings-row" data-setting="notifications">
                 <span>Notifications</span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
-              </button>
-              <button class="settings-row" data-setting="emergency-contacts">
-                <span>Emergency contacts</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
               </button>
               <button class="settings-row" data-role-action="switch">
