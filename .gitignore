@@ -1,4 +1,26 @@
-node_modules
-dist
-.vite
+# Dependencies
+node_modules/
+
+# Build output and caches
+dist/
+build/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# Secrets: keep real credentials out of git (the template is safe to commit)
+.env
+.env.*
+!.env.example
+
+# Runtime data written by the API server
+server/data/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor files
 .DS_Store
+.idea/
+.vscode/

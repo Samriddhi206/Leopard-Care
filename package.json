@@ -6,9 +6,19 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 3000",
     "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0 --port 4173"
+    "preview": "vite preview --host 0.0.0.0 --port 4173",
+    "server": "node server/index.js",
+    "dev:all": "concurrently -k -n api,web -c blue,green \"npm:server\" \"npm:dev\""
   },
   "devDependencies": {
-    "vite": "^5.4.10"
+    "concurrently": "^10.0.5",
+    "vite": "^8.3.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0"
   }
 }
