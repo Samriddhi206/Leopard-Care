@@ -83,7 +83,7 @@ button:focus-visible {
 }
 
 .brand-group,
-.top-actions {
+.user-badge {
   position: relative;
   z-index: 1;
 }
@@ -108,12 +108,6 @@ button:focus-visible {
   background: var(--amber);
   display: inline-block;
   transform: translateY(2px);
-}
-
-.top-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
 .icon-button {
@@ -141,10 +135,6 @@ button:focus-visible {
   stroke-linejoin: round;
 }
 
-.alert-button {
-  background: rgba(255, 255, 255, 0.2);
-}
-
 .alert-count {
   position: absolute;
   top: 5px;
@@ -164,6 +154,200 @@ button:focus-visible {
 
 .alert-count[hidden] {
   display: none;
+}
+
+/* Schedule screen sections. */
+.schedule-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+.schedule-section-heading h3,
+.schedule-group .section-title-row h3 {
+  margin: 0;
+}
+
+.schedule-group {
+  padding: 16px;
+}
+
+.schedule-group .section-title-row {
+  margin-bottom: 12px;
+}
+
+.notification-icon.missed-icon {
+  background: rgba(192, 57, 43, 0.12);
+  color: var(--red);
+  font-weight: 800;
+}
+
+/* Role gate: shown until a role is chosen; hides the rest of the app frame. */
+.role-gate {
+  display: none;
+}
+
+html[data-role="none"] .app-frame > :not(.role-gate) {
+  display: none;
+}
+
+html[data-role="none"] .role-gate {
+  display: flex;
+  min-height: inherit;
+  align-items: center;
+  padding: 42px 20px;
+}
+
+.role-gate-inner {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.role-gate h1 {
+  margin: 18px 0 0;
+  font-size: clamp(1.8rem, 7vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+}
+
+.role-gate h1:focus {
+  outline: none;
+}
+
+.role-gate-copy {
+  margin: 0 0 8px;
+  color: var(--label);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.role-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.role-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 88px;
+  padding: 16px;
+  text-align: left;
+  color: var(--text);
+  transition: border-color 150ms ease, transform 150ms ease;
+}
+
+.role-option:hover {
+  border-color: var(--teal);
+  transform: translateY(-1px);
+}
+
+.role-option-icon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  background: rgba(15, 92, 92, 0.12);
+}
+
+.role-option-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.role-option-copy strong {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.role-option-copy span {
+  color: var(--label);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+/* Elements limited to one role. */
+html:not([data-role="caregiver"]) [data-role-only="caregiver"],
+html:not([data-role="patient"]) [data-role-only="patient"] {
+  display: none !important;
+}
+
+/* Role panel on the home screen (rendered by src/main.js). */
+.role-panel {
+  padding: 16px;
+}
+
+.role-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.role-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel);
+  color: var(--teal);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.role-action:hover {
+  border-color: var(--teal);
+}
+
+.role-action-icon {
+  font-size: 18px;
+}
+
+/* Patient task checklist. */
+.check-row {
+  cursor: pointer;
+}
+
+.task-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--teal);
+  cursor: pointer;
+}
+
+.task-check:focus-visible {
+  outline: 3px solid rgba(15, 92, 92, 0.38);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .content {
@@ -1302,5 +1486,647 @@ button:focus-visible {
     width: 100vw;
     min-height: 100vh;
     border-radius: 0;
+  }
+}
+
+/* ------------------------------------------------------------------------
+   Components added for role-aware care management. Kept at the end so they
+   win over the base component rules above at equal specificity.
+   ------------------------------------------------------------------------ */
+
+/* Topbar user badge. */
+.user-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 58%;
+  padding: 4px 12px 4px 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.user-badge-avatar {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--teal);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.user-badge-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.user-badge-text strong,
+.user-badge-text span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-badge-text strong {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.user-badge-text span {
+  color: var(--label);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Unread badge on the bottom-nav Alerts button. */
+.nav-item {
+  position: relative;
+}
+
+/* Medication prompt and supplies. */
+.med-prompt-done {
+  margin: 14px 0 0;
+  color: var(--teal);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.supply-wrap.is-low .supply-header span:last-child {
+  color: var(--red);
+}
+
+.supply-wrap.is-low .progress-fill {
+  background: var(--red);
+}
+
+/* Needs attention. */
+.attention-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.attention-item + .attention-item {
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.attention-source {
+  color: var(--label);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.alert-card .attention-item h3 {
+  margin: 2px 0 0;
+  font-size: 1.05rem;
+}
+
+.attention-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.attention-actions .mini-tag {
+  min-width: 0;
+}
+
+.alert-card .attention-empty {
+  margin: 0;
+  font-weight: 700;
+}
+
+/* Contact card: one place to call or message, with a caregiver picker. */
+.contact-select-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--label);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.contact-details {
+  margin: 8px 0 14px;
+  color: var(--label);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Editable profile. */
+.profile-card {
+  padding: 16px;
+}
+
+.profile-heading-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-edit {
+  align-self: flex-start;
+  font-size: 13px;
+}
+
+.profile-details {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 14px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.profile-details dt {
+  color: var(--label);
+  font-weight: 700;
+}
+
+.profile-details dd {
+  margin: 0;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.profile-details dd.is-empty {
+  color: var(--label);
+  font-weight: 600;
+  font-style: italic;
+}
+
+.caregiver-action.caregiver-remove {
+  color: var(--red);
+  background: rgba(192, 57, 43, 0.08);
+}
+
+/* Task rows: checkbox + label, with optional Late / alert controls. */
+.check-row {
+  cursor: default;
+}
+
+.check-label {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.is-late .task-copy p {
+  color: var(--red);
+}
+
+.mini-tag.late-tag {
+  background: rgba(192, 57, 43, 0.08);
+  color: var(--red);
+}
+
+.mini-tag.late-tag.is-active {
+  background: var(--red);
+  color: white;
+}
+
+.alert-toggle {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 92, 92, 0.08);
+  font-size: 15px;
+}
+
+.alert-toggle[aria-pressed="false"] {
+  background: var(--gray);
+  opacity: 0.7;
+}
+
+/* Appointment cards. */
+.schedule-copy {
+  min-width: 0;
+}
+
+.appointment-actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+/* ========================================================================
+   Design refresh: elevated cards, higher-contrast type, 44px touch targets
+   and status pills. Overrides the base rules above.
+   ======================================================================== */
+
+:root {
+  --text: #1c1f23;
+  /* Secondary text: was #999 (2.8:1 on cream); this passes WCAG AA (>= 4.5:1). */
+  --label: #5c6166;
+  --border: #e6e1d9;
+  --radius-card: 16px;
+  --shadow-card: 0 1px 2px rgba(16, 37, 44, 0.06), 0 8px 24px rgba(16, 37, 44, 0.08);
+  --shadow-raised: 0 2px 4px rgba(16, 37, 44, 0.08), 0 14px 32px rgba(16, 37, 44, 0.12);
+  --green-ink: #17663f;
+  --green-wash: #e2f3e9;
+  --amber-ink: #8a4b06;
+  --amber-wash: #fdebd3;
+  --red-ink: #a52a1f;
+  --red-wash: #fbe3e0;
+  --blue-ink: #1f4f86;
+  --blue-wash: #e4edf8;
+  --tap: 44px;
+}
+
+body {
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Elevated cards. */
+.card {
+  background: var(--panel);
+  border: 1px solid rgba(16, 37, 44, 0.06);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.reminder-card,
+.task-card,
+.alert-card,
+.contact-card,
+.activity-card,
+.role-panel,
+.schedule-group,
+.welcome-card,
+.profile-card {
+  padding: 18px;
+}
+
+.stat-box {
+  border-radius: 12px;
+}
+
+.task-icon,
+.caregiver-avatar,
+.date-block {
+  border-radius: 12px;
+}
+
+/* Crisper, larger small text. */
+.eyebrow,
+.alert-label,
+.contact-select-label {
+  font-size: 12px;
+  letter-spacing: 0.07em;
+}
+
+.task-copy p,
+.schedule-copy p,
+.caregiver-details span,
+.contact-details,
+.alert-card p {
+  color: var(--label);
+  font-size: 13px;
+}
+
+.caregiver-details strong {
+  font-size: 14px;
+}
+
+.attention-source {
+  font-size: 11px;
+}
+
+.toast {
+  font-size: 14px;
+  padding: 12px 18px;
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+
+/* Accessible touch targets: every control is at least 44 x 44 px. */
+.text-button,
+button.mini-tag,
+.caregiver-action,
+.calendar-action,
+.filter-button,
+.primary-action,
+.secondary-button {
+  min-height: var(--tap);
+}
+
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap);
+  padding: 0 6px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.text-button:hover {
+  background: rgba(15, 92, 92, 0.06);
+}
+
+button.mini-tag {
+  min-width: var(--tap);
+  padding: 0 14px;
+  border: 0;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.caregiver-action {
+  min-width: var(--tap);
+  padding: 0 12px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.calendar-action {
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+.icon-button,
+.inline-icon,
+.alert-toggle,
+.dialog-close {
+  width: var(--tap);
+  height: var(--tap);
+}
+
+.nav-item {
+  width: 48px;
+  height: 48px;
+}
+
+.dialog-input,
+.contact-select {
+  min-height: var(--tap);
+}
+
+/* Status pills: green Done, amber/red Late, blue Pending. */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.status-pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-done {
+  background: var(--green-wash);
+  color: var(--green-ink);
+}
+
+.status-late {
+  background: var(--amber-wash);
+  color: var(--amber-ink);
+}
+
+.status-pending {
+  background: var(--blue-wash);
+  color: var(--blue-ink);
+}
+
+.task-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+
+.task-copy .task-meta {
+  margin-top: 6px;
+}
+
+/* Status text colour now comes from the pill, not the whole line. */
+.is-late .task-copy p {
+  color: var(--label);
+}
+
+.mini-tag.done-tag {
+  background: var(--green-wash);
+  color: var(--green-ink);
+}
+
+.mini-tag.pending-tag {
+  background: var(--amber-wash);
+  color: var(--amber-ink);
+}
+
+.mini-tag.late-tag {
+  background: var(--red-wash);
+  color: var(--red-ink);
+}
+
+.mini-tag.late-tag.is-active {
+  background: var(--red-ink);
+  color: white;
+}
+
+/* Topbar: brand, activity pill, user badge; caregiver patient switcher below. */
+.topbar {
+  flex-wrap: wrap;
+  row-gap: 14px;
+}
+
+.topbar-right {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 62%;
+}
+
+.topbar-right .user-badge {
+  max-width: 100%;
+  min-height: var(--tap);
+  box-shadow: var(--shadow-card);
+  background: var(--panel);
+}
+
+.activity-pill {
+  flex-shrink: 0;
+  min-height: var(--tap);
+  min-width: var(--tap);
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: var(--red-ink);
+  color: white;
+  font-weight: 800;
+  box-shadow: var(--shadow-card);
+}
+
+.activity-pill[hidden] {
+  display: none;
+}
+
+.patient-switcher {
+  position: relative;
+  z-index: 1;
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 4px 0 14px;
+  min-height: 48px;
+  border: 1px solid rgba(16, 37, 44, 0.06);
+  border-radius: var(--radius-card);
+  background: var(--panel);
+  box-shadow: var(--shadow-card);
+}
+
+.patient-switcher-label {
+  flex-shrink: 0;
+  color: var(--label);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.patient-select {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--tap);
+  border: 0;
+  border-radius: 12px;
+  padding: 0 10px;
+  background: transparent;
+  color: var(--teal-deep);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.patient-select:focus-visible,
+.contact-select:focus-visible,
+.dialog-input:focus-visible {
+  outline: 3px solid rgba(15, 92, 92, 0.38);
+  outline-offset: 2px;
+}
+
+/* Card header tools (read aloud + secondary action). */
+.card-tools {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.read-aloud[aria-pressed="true"] {
+  background: var(--teal);
+  color: white;
+}
+
+/* Patient check-in. */
+.check-in-button {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 14px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--teal);
+  color: white;
+  font-size: 1rem;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(15, 92, 92, 0.22);
+}
+
+.check-in-button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Caregiver recent activity (relief notifications). */
+.activity-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-item {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.activity-item + .activity-item {
+  border-top: 1px solid var(--border);
+}
+
+.activity-item.is-new {
+  background: var(--green-wash);
+}
+
+.activity-item time {
+  color: var(--label);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.activity-icon {
+  font-size: 18px;
+  text-align: center;
+}
+
+.activity-empty {
+  color: var(--label);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: 360px) {
+  .card-tools .read-aloud {
+    font-size: 12px;
   }
 }

@@ -15,40 +15,75 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+    <script>
+      // Apply the saved role before first paint so the wrong view never flashes.
+      (function () {
+        let role = null;
+        try {
+          role = localStorage.getItem('userRole');
+        } catch {}
+        document.documentElement.dataset.role = role === 'patient' || role === 'caregiver' ? role : 'none';
+      })();
+    </script>
   </head>
   <body>
     <div class="page-shell">
       <div class="app-frame">
+        <section class="role-gate" data-role-gate aria-labelledby="role-gate-title">
+          <div class="role-gate-inner">
+            <div class="brand-group">
+              <span class="brand-name">Leopard Care</span>
+              <span class="brand-badge" aria-hidden="true"></span>
+            </div>
+            <h1 id="role-gate-title" tabindex="-1">Are you a Patient or a Caregiver?</h1>
+            <p class="role-gate-copy">Choose how you'll use Leopard Care. You can switch anytime in Settings.</p>
+            <div class="role-options">
+              <button class="role-option card" data-select-role="patient">
+                <span class="role-option-icon" aria-hidden="true">🙂</span>
+                <span class="role-option-copy">
+                  <strong>Patient</strong>
+                  <span>See your day, check off tasks, and reach your caregiver.</span>
+                </span>
+              </button>
+              <button class="role-option card" data-select-role="caregiver">
+                <span class="role-option-icon" aria-hidden="true">🤝</span>
+                <span class="role-option-copy">
+                  <strong>Caregiver</strong>
+                  <span>Manage tasks, medications, appointments, and the care circle.</span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
         <header class="topbar" aria-label="Leopard Care top bar">
           <div class="brand-group">
             <span class="brand-name">Leopard Care</span>
             <span class="brand-badge" aria-hidden="true"></span>
           </div>
 
-          <div class="top-actions" aria-label="App actions">
-            <button class="icon-button" data-screen="calendar" aria-label="Calendar">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M7 2v2M17 2v2M4 9h16M5 5h14a1 1 0 0 1 1 1v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1Z" />
-              </svg>
+          <div class="topbar-right">
+            <!-- Unseen relief notifications from the patient (caregiver view). -->
+            <button class="activity-pill" data-action="show-activity" data-activity-pill data-role-only="caregiver" hidden>
+              <span aria-hidden="true">🔔</span>
+              <span data-activity-count>0</span>
             </button>
-            <button class="icon-button" data-screen="profile" aria-label="Settings">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M12 3v3M12 18v3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M3 12h3M18 12h3M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" />
-                <circle cx="12" cy="12" r="3.5" />
-              </svg>
-            </button>
-            <button class="icon-button" data-action="call" aria-label="Call Sarah">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3.08 4.18 2 2 0 0 1 5.08 2h3a2 2 0 0 1 2 1.72l.42 2.18a2 2 0 0 1-.54 1.8L8 9.91a16 16 0 0 0 6.09 6.09l2.21-2.01a2 2 0 0 1 1.8-.54l2.18.42A2 2 0 0 1 22 16.92Z" />
-              </svg>
-            </button>
-            <button class="icon-button alert-button" data-screen="alerts" aria-label="Notifications">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M6 8a6 6 0 1 1 12 0v4.5l1.6 3.2a1 1 0 0 1-.9 1.5H5.3a1 1 0 0 1-.9-1.5L6 12.5V8Zm3 10a3 3 0 0 0 6 0" />
-              </svg>
-              <span class="alert-count">1</span>
-            </button>
+            <div class="user-badge" data-user-badge>
+              <span class="user-badge-avatar" data-user-initials aria-hidden="true">MJ</span>
+              <span class="user-badge-text">
+                <strong data-user-name>Marta</strong>
+                <span data-user-role>Patient</span>
+              </span>
+            </div>
           </div>
+
+          <label class="patient-switcher" data-role-only="caregiver">
+            <span class="patient-switcher-label">Caring for</span>
+            <select class="patient-select" data-patient-select aria-label="Choose patient">
+              <option value="marta">Marta Johnson</option>
+              <option value="john">John Doe</option>
+            </select>
+          </label>
         </header>
 
         <main class="content">
@@ -58,7 +93,7 @@
                 <div class="label-chip">Care Overview</div>
                 <span class="mini-tag" data-task-total>6 tasks</span>
               </div>
-              <h1>Good morning, Marta</h1>
+              <h1>Good morning, <span data-patient-first-name>Marta</span></h1>
 
               <div class="stats-grid">
                 <div class="stat-box">
@@ -75,65 +110,86 @@
                   </div>
                 </div>
               </div>
+              <button class="check-in-button" data-action="check-in" data-role-only="patient">
+                <span aria-hidden="true">👋</span> I'm OK, check in
+              </button>
             </div>
+
+            <div data-role-panel></div>
 
             <div class="card reminder-card">
               <div class="section-title-row">
-                <span class="eyebrow">Reminder</span>
-                <button class="text-button" data-screen="calendar">View all</button>
+                <span class="eyebrow">Next medication</span>
+                <div class="card-tools">
+                  <button class="text-button read-aloud" data-action="read-aloud" data-read="medication" aria-pressed="false">🔊 Read aloud</button>
+                  <button class="text-button" data-screen="calendar">View all</button>
+                </div>
               </div>
 
-              <div class="task-item primary-row">
-                <div class="task-icon icon-teal">💊</div>
-                <div class="task-copy">
-                  <h2>Morning medication</h2>
-                  <p>8:30 AM • With breakfast</p>
+              <!-- Shows the next medication not yet taken today (rendered by renderMedicationPrompt). -->
+              <div data-med-prompt>
+                <div class="task-item primary-row">
+                  <div class="task-icon icon-teal" aria-hidden="true">💊</div>
+                  <div class="task-copy">
+                    <h2 data-med-title>Morning medication</h2>
+                    <p class="task-meta" data-med-detail>8:30 AM • With breakfast</p>
+                  </div>
+                  <button class="primary-action" data-action="medication" data-med-taken>Taken</button>
                 </div>
-                <button class="primary-action" data-action="medication">Taken</button>
-              </div>
 
-              <div class="supply-wrap">
-                <div class="supply-header">
-                  <span>Supplies</span>
-                  <span>3/4 left</span>
-                </div>
-                <div class="progress-track" aria-label="Supply progress">
-                  <span class="progress-fill" style="width: 75%"></span>
+                <div class="supply-wrap">
+                  <div class="supply-header">
+                    <span>Supplies</span>
+                    <span data-med-supply>18/30 left</span>
+                  </div>
+                  <div class="progress-track" role="img" aria-label="Medication supply" data-med-supply-track>
+                    <span class="progress-fill" data-med-supply-fill style="width: 60%"></span>
+                  </div>
                 </div>
               </div>
+              <p class="med-prompt-done" data-med-prompt-done hidden>All medications logged for today.</p>
             </div>
 
             <div class="card task-card">
               <div class="section-title-row">
                 <span class="eyebrow">Today's care</span>
-                <span class="status-chip">Today</span>
+                <button class="text-button read-aloud" data-action="read-aloud" data-read="schedule" aria-pressed="false">🔊 Read aloud</button>
               </div>
 
               <div class="task-list" data-task-list></div>
             </div>
 
-            <div class="card alert-card">
+            <div class="card alert-card" data-attention-card>
               <div class="alert-heading">
                 <span class="alert-label">Needs attention</span>
-                <span class="alert-time">Now</span>
-              </div>
-              <h3>Visiting nurse update</h3>
-              <p>Check blood pressure log before evening check-in.</p>
-            </div>
-
-            <div class="card contact-card">
-              <div class="contact-header">
-                <div>
-                  <h3>Sarah Johnson</h3>
-                  <p>Daughter • +1 (503) 555-0191</p>
+                <div class="card-tools">
+                  <button class="text-button read-aloud" data-action="read-aloud" data-read="attention" aria-pressed="false">🔊 Read aloud</button>
+                  <button class="text-button" data-action="add-attention" data-role-only="caregiver">+ Add</button>
                 </div>
               </div>
+              <div class="attention-list" data-attention-list></div>
+            </div>
+
+            <!-- Relief notifications: what the patient has done, live from their device. -->
+            <div class="card activity-card" id="recent-activity" data-role-only="caregiver">
+              <div class="section-title-row">
+                <span class="eyebrow">Recent activity</span>
+                <button class="text-button read-aloud" data-action="read-aloud" data-read="activity" aria-pressed="false">🔊 Read aloud</button>
+              </div>
+              <ul class="activity-list" data-activity-list></ul>
+            </div>
+
+            <!-- The single contact area: pick a linked caregiver, then call or message. -->
+            <div class="card contact-card">
+              <label class="contact-select-label" for="contact-select">Contact a caregiver</label>
+              <select class="dialog-input contact-select" id="contact-select" data-contact-select></select>
+              <p class="contact-details" data-contact-details></p>
               <div class="contact-actions">
-                <button class="action-button action-primary" data-action="call" data-contact-name="Sarah Johnson" data-phone="+15035550191">
+                <button class="action-button action-primary" data-action="call" data-contact-button>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3.08 4.18 2 2 0 0 1 5.08 2h3a2 2 0 0 1 2 1.72l.42 2.18a2 2 0 0 1-.54 1.8L8 9.91a16 16 0 0 0 6.09 6.09l2.21-2.01a2 2 0 0 1 1.8-.54l2.18.42A2 2 0 0 1 22 16.92Z" /></svg>
                   Call
                 </button>
-                <button class="action-button action-amber" data-action="message" data-contact-name="Sarah Johnson" data-phone="+15035550191">
+                <button class="action-button action-amber" data-action="message" data-contact-button>
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9A2.5 2.5 0 0 1 17.5 17H9l-5 4v-15.5Z" /></svg>
                   Message
                 </button>
@@ -145,49 +201,34 @@
             <div class="screen-header card">
               <div>
                 <p class="eyebrow">Schedule</p>
-                <h2>Care calendar</h2>
+                <h2>Care schedule</h2>
               </div>
                 <button class="icon-button inline-icon" data-screen="home" aria-label="Back to home">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
               </button>
             </div>
 
-            <div class="schedule-list">
-              <div class="card schedule-card">
-                <div class="date-block">
-                  <span class="month">OCT</span>
-                  <strong>02</strong>
-                </div>
-                <div class="schedule-copy">
-                  <h3>Medication review</h3>
-                  <p>8:30 AM • Dr. Nguyen</p>
-                </div>
-                <button class="schedule-tag tag-teal calendar-action" data-event="Medication review" data-date="20261002" data-time="083000" data-description="Medication review with Dr. Nguyen">Add to calendar</button>
-              </div>
+            <div class="schedule-section-heading" id="schedule-appointments">
+              <h3 class="eyebrow">Appointments</h3>
+              <button class="text-button" data-action="add-appointment" data-role-only="caregiver">+ Add appointment</button>
+            </div>
+            <!-- Rendered from data by renderAppointments(), sorted by date and time. -->
+            <div class="schedule-list" data-appointment-list></div>
 
-              <div class="card schedule-card">
-                <div class="date-block amber">
-                  <span class="month">OCT</span>
-                  <strong>03</strong>
-                </div>
-                <div class="schedule-copy">
-                  <h3>Physical therapy</h3>
-                  <p>10:00 AM • Home visit</p>
-                </div>
-                <button class="schedule-tag tag-amber calendar-action" data-event="Physical therapy" data-date="20261003" data-time="100000" data-description="Physical therapy home visit">Add to calendar</button>
+            <div class="card schedule-group" id="schedule-tasks">
+              <div class="section-title-row">
+                <h3 class="eyebrow">Daily tasks</h3>
+                <button class="text-button" data-action="add-task" data-role-only="caregiver">+ Add task</button>
               </div>
+              <div class="task-list" data-schedule-tasks></div>
+            </div>
 
-              <div class="card schedule-card">
-                <div class="date-block red">
-                  <span class="month">OCT</span>
-                  <strong>05</strong>
-                </div>
-                <div class="schedule-copy">
-                  <h3>Care team meeting</h3>
-                  <p>1:30 PM • Video call</p>
-                </div>
-                <button class="schedule-tag tag-red calendar-action" data-event="Care team meeting" data-date="20261005" data-time="133000" data-description="Care team meeting by video call">Add to calendar</button>
+            <div class="card schedule-group" id="schedule-medications">
+              <div class="section-title-row">
+                <h3 class="eyebrow">Medications</h3>
+                <button class="text-button" data-action="add-medication" data-role-only="caregiver">+ Add medication</button>
               </div>
+              <div class="task-list" data-schedule-medications></div>
             </div>
           </section>
 
@@ -196,7 +237,7 @@
               <div>
                 <p class="eyebrow">Care feed</p>
                 <h2>Notifications</h2>
-                <p class="notifications-subtitle">Updates for Marta Johnson</p>
+                <p class="notifications-subtitle">Updates for <span data-patient-name>Marta Johnson</span></p>
               </div>
               <button class="icon-button inline-icon" data-screen="home" aria-label="Back to home">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
@@ -218,6 +259,18 @@
 
             <p class="notification-day">Today</p>
             <div class="alert-stack">
+              <article class="card alert-item alert-critical missed-alert" data-notification data-notification-id="missed-tasks" data-missed-alert hidden>
+                <div class="notification-icon missed-icon" aria-hidden="true">!</div>
+                <div class="notification-copy">
+                  <div class="notification-meta"><span class="notification-category">Missed tasks</span><time>Overdue</time></div>
+                  <h3 data-missed-title>Missed tasks</h3>
+                  <p data-missed-list></p>
+                  <div class="battery-actions">
+                    <button class="mini-tag pending-tag" data-screen="calendar">Open schedule</button>
+                  </div>
+                </div>
+              </article>
+
               <article class="card alert-item alert-critical" data-notification data-notification-id="medication">
                 <div class="notification-icon medication-icon" aria-hidden="true">Rx</div>
                 <div class="notification-copy">
@@ -267,8 +320,8 @@
           <section class="screen" data-screen="profile">
             <div class="screen-header card">
               <div>
-                <p class="eyebrow">Profile</p>
-                <h2>Care circle</h2>
+                <p class="eyebrow">Settings</p>
+                <h2>Profile &amp; care team</h2>
               </div>
               <button class="icon-button inline-icon" data-screen="home" aria-label="Back to home">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6" /></svg>
@@ -277,12 +330,14 @@
 
             <div class="card profile-card">
               <div class="profile-heading">
-                <div class="avatar">MJ</div>
-                <div>
-                  <h3>Marta Johnson</h3>
-                  <p>Resident • Room 210</p>
+                <div class="avatar" data-patient-initials aria-hidden="true">MJ</div>
+                <div class="profile-heading-copy">
+                  <h3 data-patient-name>Marta Johnson</h3>
+                  <p>Patient</p>
                 </div>
+                <button class="text-button profile-edit" data-action="edit-patient">Edit</button>
               </div>
+              <dl class="profile-details" data-patient-details></dl>
               <div class="profile-stats">
                 <div>
                   <strong data-caregiver-count>3</strong>
@@ -301,7 +356,7 @@
                   <p class="eyebrow">Care circle</p>
                   <h3>Caregivers</h3>
                 </div>
-                <button class="primary-action add-caregiver-button" data-action="add-caregiver">
+                <button class="primary-action add-caregiver-button" data-action="add-caregiver" data-role-only="caregiver">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
                   Add caregiver
                 </button>
@@ -326,6 +381,14 @@
                 <span>Emergency contacts</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
               </button>
+              <button class="settings-row" data-role-action="switch">
+                <span data-role-switch-label>Switch role</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h13l-4-4M17 17H4l4 4" /></svg>
+              </button>
+              <button class="settings-row" data-role-action="logout">
+                <span>Log out</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 17l5-5-5-5M15 12H3" /></svg>
+              </button>
               <button class="settings-row reset-demo-row" data-action="reset-demo">
                 <span>Reset demo data</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8m0-5v5h5" /></svg>
@@ -341,8 +404,10 @@
           <button class="nav-item" data-screen="calendar" aria-label="Calendar">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v2M17 2v2M4 9h16M5 5h14a1 1 0 0 1 1 1v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1Z" /></svg>
           </button>
-          <button class="nav-item" data-screen="alerts" aria-label="Alerts">
+          <button class="nav-item" data-screen="alerts">
+            <span class="visually-hidden">Alerts</span>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0v4.5l1.6 3.2a1 1 0 0 1-.9 1.5H5.3a1 1 0 0 1-.9-1.5L6 12.5V8Zm3 10a3 3 0 0 0 6 0" /></svg>
+            <span class="alert-count" data-badge-count>1</span>
           </button>
           <button class="nav-item" data-screen="profile" aria-label="Profile">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 20c1.6-3 4.4-4.5 8-4.5s6.4 1.5 8 4.5" /></svg>
@@ -356,541 +421,16 @@
       <form method="dialog" class="dialog-form" id="dialog-form">
         <div class="dialog-heading">
           <h2 id="dialog-title"></h2>
-          <button class="icon-button dialog-close" value="cancel" aria-label="Close dialog">×</button>
+          <button class="icon-button dialog-close" value="cancel" formnovalidate aria-label="Close dialog">×</button>
         </div>
         <div id="dialog-content"></div>
         <div class="dialog-actions">
-          <button class="secondary-button" value="cancel">Cancel</button>
+          <button class="secondary-button" value="cancel" formnovalidate>Cancel</button>
           <button class="primary-action" id="dialog-save" value="save">Save</button>
         </div>
       </form>
     </dialog>
 
-    <script>
-      const screens = document.querySelectorAll('.screen');
-      const navItems = document.querySelectorAll('.nav-item');
-      const toast = document.getElementById('toast');
-      const dialog = document.getElementById('app-dialog');
-      const dialogForm = document.getElementById('dialog-form');
-      const dialogTitle = document.getElementById('dialog-title');
-      const dialogContent = document.getElementById('dialog-content');
-      const dialogSave = document.getElementById('dialog-save');
-      const storageKey = 'leopard-care-state';
-      const taskCatalog = [
-        { id: 'bath', title: 'Bath routine', time: '9:00 AM', icon: '🧼', mode: 'queue' },
-        { id: 'lunch', title: 'Lunch prep', time: '12:30 PM', icon: '🥗', mode: 'queue' },
-        { id: 'walk', title: 'Walk & stretch', time: '3:15 PM', icon: '🚶', mode: 'schedule' },
-        { id: 'blood-pressure', title: 'Blood pressure log', time: '6:00 PM', icon: '🩺', mode: 'queue' },
-        { id: 'evening-medication', title: 'Evening medication', time: '8:00 PM', icon: '💊', mode: 'queue' },
-        { id: 'bedtime', title: 'Prepare for bed', time: '9:00 PM', icon: '🌙', mode: 'schedule' }
-      ];
-      const notificationIds = ['medication', 'hydration', 'family', 'battery'];
-      let alertFilter = 'all';
-      let batteryManager = null;
-      let batteryEventsBound = false;
-      let batteryWarningShown = false;
-      const defaultState = {
-        medicationTaken: false,
-        tasks: ['done', 'next', 'later', 'next', 'next', 'next'],
-        hydration: 6,
-        alertsRead: false,
-        readNotifications: [],
-        batteryReminderEnabled: false,
-        caregivers: [],
-        profile: {}
-      };
-
-      let savedState;
-      try {
-        savedState = JSON.parse(localStorage.getItem(storageKey) || '{}');
-      } catch {
-        savedState = {};
-      }
-      const state = {
-        ...defaultState,
-        ...savedState,
-        tasks: taskCatalog.map((task, index) => savedState.tasks?.[index] || defaultState.tasks[index]),
-        hydration: Number.isFinite(Number(savedState.hydration)) ? Number(savedState.hydration) : defaultState.hydration,
-        readNotifications: Array.isArray(savedState.readNotifications)
-          ? savedState.readNotifications
-          : savedState.alertsRead ? [...notificationIds] : [],
-        batteryReminderEnabled: Boolean(savedState.batteryReminderEnabled),
-        caregivers: Array.isArray(savedState.caregivers) ? savedState.caregivers : [],
-        profile: savedState.profile || {}
-      };
-
-      function saveState() {
-        try {
-          localStorage.setItem(storageKey, JSON.stringify(state));
-        } catch {
-          showToast('Changes saved for this visit');
-        }
-      }
-
-      function renderTasks() {
-        const taskList = document.querySelector('[data-task-list]');
-        const openTasks = taskCatalog
-          .map((task, index) => ({ ...task, index, status: state.tasks[index] }))
-          .filter((task) => task.status !== 'done')
-          .slice(0, 3);
-        taskList.replaceChildren();
-
-        if (openTasks.length === 0) {
-          const emptyState = document.createElement('p');
-          emptyState.className = 'task-empty';
-          emptyState.textContent = 'All caught up';
-          taskList.append(emptyState);
-          return;
-        }
-
-        openTasks.forEach((task) => {
-          const row = document.createElement('div');
-          row.className = 'task-item compact-row';
-
-          const icon = document.createElement('div');
-          icon.className = 'task-icon icon-soft';
-          icon.textContent = task.icon;
-
-          const copy = document.createElement('div');
-          copy.className = 'task-copy';
-          const title = document.createElement('h3');
-          title.textContent = task.title;
-          const time = document.createElement('p');
-          time.textContent = task.status.startsWith('Scheduled ') ? task.status : task.time;
-          copy.append(title, time);
-
-          const actions = document.createElement('div');
-          actions.className = 'task-actions';
-          const doneButton = document.createElement('button');
-          doneButton.className = 'mini-tag done-tag';
-          doneButton.dataset.action = 'task-done';
-          doneButton.dataset.taskIndex = task.index;
-          doneButton.textContent = 'Done';
-          doneButton.setAttribute('aria-label', `Mark ${task.title} complete`);
-          actions.append(doneButton);
-
-          const statusButton = document.createElement('button');
-          statusButton.className = 'mini-tag pending-tag';
-          statusButton.dataset.taskIndex = task.index;
-          if (task.mode === 'schedule') {
-            statusButton.dataset.action = 'task-later';
-            statusButton.textContent = task.status.startsWith('Scheduled ') ? 'Change' : 'Later';
-            statusButton.setAttribute('aria-label', `Reschedule ${task.title}`);
-          } else {
-            statusButton.dataset.action = 'task-next';
-            statusButton.textContent = task.status === 'queued' ? 'Queued' : 'Next';
-            statusButton.setAttribute('aria-pressed', String(task.status === 'queued'));
-            statusButton.setAttribute('aria-label', `${task.status === 'queued' ? 'Remove' : 'Queue'} ${task.title}`);
-          }
-          actions.append(statusButton);
-          row.append(icon, copy, actions);
-          taskList.append(row);
-        });
-      }
-
-      function updateSummary() {
-        const completedTasks = (state.medicationTaken ? 1 : 0) + state.tasks.filter((status) => status === 'done').length;
-        document.querySelector('[data-completed-count]').textContent = `${completedTasks}/${taskCatalog.length + 1}`;
-        document.querySelector('[data-task-total]').textContent = `${taskCatalog.length} tasks`;
-        document.querySelector('[data-hydration-count]').textContent = `${state.hydration}/8`;
-      }
-
-      function renderCaregivers() {
-        const knownContact = { name: 'Sarah Johnson', role: 'Daughter', phone: '+15035550191' };
-        const caregivers = [knownContact, ...state.caregivers];
-        const list = document.querySelector('[data-caregiver-list]');
-        list.replaceChildren();
-
-        caregivers.forEach((caregiver) => {
-          const row = document.createElement('div');
-          row.className = 'caregiver-row';
-          const initials = caregiver.name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase();
-          const avatar = document.createElement('div');
-          avatar.className = 'caregiver-avatar';
-          avatar.textContent = initials;
-
-          const details = document.createElement('div');
-          details.className = 'caregiver-details';
-          const name = document.createElement('strong');
-          name.textContent = caregiver.name;
-          const contact = document.createElement('span');
-          contact.textContent = `${caregiver.role} · ${caregiver.phone}`;
-          details.append(name, contact);
-
-          const actions = document.createElement('div');
-          actions.className = 'caregiver-actions';
-          ['call', 'message'].forEach((action) => {
-            const button = document.createElement('button');
-            button.className = 'caregiver-action';
-            button.dataset.action = action;
-            button.dataset.contactName = caregiver.name;
-            button.dataset.phone = caregiver.phone;
-            button.textContent = action === 'call' ? 'Call' : 'Message';
-            actions.append(button);
-          });
-
-          row.append(avatar, details, actions);
-          list.append(row);
-        });
-
-        document.querySelector('[data-caregiver-count]').textContent = String(3 + state.caregivers.length);
-      }
-
-      function syncNotificationState() {
-        const unreadCount = notificationIds.filter((id) => !state.readNotifications.includes(id)).length;
-        document.querySelector('[data-unread-count]').textContent = `${unreadCount} unread`;
-        const badge = document.querySelector('.alert-count');
-        badge.textContent = unreadCount;
-        badge.hidden = unreadCount === 0;
-
-        let visibleCount = 0;
-        document.querySelectorAll('[data-notification]').forEach((item) => {
-          const isRead = state.readNotifications.includes(item.dataset.notificationId);
-          item.classList.toggle('is-read', isRead);
-          item.hidden = alertFilter === 'unread' && isRead;
-          if (!item.hidden) visibleCount += 1;
-        });
-
-        document.querySelectorAll('[data-alert-filter]').forEach((button) => {
-          const isActive = button.dataset.alertFilter === alertFilter;
-          button.classList.toggle('active', isActive);
-          button.setAttribute('aria-pressed', String(isActive));
-        });
-        document.querySelector('[data-notification-empty]').hidden = visibleCount > 0;
-        const batteryButton = document.querySelector('[data-action="toggle-battery"]');
-        batteryButton.textContent = state.batteryReminderEnabled ? 'Disable reminder' : 'Enable reminder';
-        batteryButton.setAttribute('aria-pressed', String(state.batteryReminderEnabled));
-      }
-
-      function updateBatteryDisplay() {
-        if (!batteryManager) return;
-        const percent = Math.round(batteryManager.level * 100);
-        const isLow = percent <= 20 && !batteryManager.charging;
-        const batteryCard = document.querySelector('[data-notification-id="battery"]');
-        document.querySelector('[data-battery-level]').textContent = `${percent}%${batteryManager.charging ? ' · Charging' : ''}`;
-        document.querySelector('[data-battery-fill]').style.width = `${percent}%`;
-        batteryCard.classList.toggle('is-low', isLow);
-        document.querySelector('[data-battery-copy]').textContent = isLow
-          ? 'Phone battery is low. Connect a charger before the next care check-in.'
-          : batteryManager.charging
-            ? 'Phone is charging. The reminder threshold is 20%.'
-            : `Battery is at ${percent}%. Reminder threshold is 20%.`;
-
-        if (state.batteryReminderEnabled && isLow && !batteryWarningShown) {
-          batteryWarningShown = true;
-          state.readNotifications = state.readNotifications.filter((id) => id !== 'battery');
-          saveState();
-          syncNotificationState();
-          showToast('Phone battery is low');
-        } else if (!isLow) {
-          batteryWarningShown = false;
-        }
-      }
-
-      async function checkBatteryStatus() {
-        if (typeof navigator.getBattery !== 'function') {
-          document.querySelector('[data-battery-level]').textContent = 'Unavailable';
-          document.querySelector('[data-battery-copy]').textContent = 'This browser does not share battery status. Use your phone’s built-in low-battery alert.';
-          showToast('Battery status unavailable in this browser');
-          return false;
-        }
-
-        try {
-          batteryManager ||= await navigator.getBattery();
-          if (!batteryEventsBound) {
-            batteryManager.addEventListener('levelchange', updateBatteryDisplay);
-            batteryManager.addEventListener('chargingchange', updateBatteryDisplay);
-            batteryEventsBound = true;
-          }
-          updateBatteryDisplay();
-          return true;
-        } catch {
-          document.querySelector('[data-battery-level]').textContent = 'Unavailable';
-          document.querySelector('[data-battery-copy]').textContent = 'Battery status could not be read on this device.';
-          showToast('Could not read battery status');
-          return false;
-        }
-      }
-
-      function syncStateToPage() {
-        const medicationButton = document.querySelector('[data-action="medication"]');
-        medicationButton.textContent = state.medicationTaken ? 'Logged' : 'Taken';
-        medicationButton.disabled = state.medicationTaken;
-        medicationButton.classList.toggle('is-done', state.medicationTaken);
-
-        renderTasks();
-        updateSummary();
-        renderCaregivers();
-        syncNotificationState();
-      }
-
-      function showScreen(name) {
-        screens.forEach((screen) => {
-          screen.classList.toggle('active', screen.dataset.screen === name);
-        });
-
-        navItems.forEach((button) => {
-          button.classList.toggle('active', button.dataset.screen === name);
-        });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
-      function showToast(message) {
-        toast.textContent = message;
-        toast.classList.add('show');
-        clearTimeout(showToast.timeoutId);
-        showToast.timeoutId = setTimeout(() => toast.classList.remove('show'), 1800);
-      }
-
-      function openDialog(title, content, onSave, saveLabel = 'Save') {
-        dialogTitle.textContent = title;
-        dialogContent.replaceChildren(content);
-        dialogSave.textContent = saveLabel;
-        dialogSave.hidden = !onSave;
-        dialogSave.dataset.enabled = String(Boolean(onSave));
-        dialog.showModal();
-        dialogForm.onsubmit = (event) => {
-          if (event.submitter?.value !== 'save' || !onSave) return;
-          event.preventDefault();
-          onSave();
-          dialog.close();
-        };
-      }
-
-      function openSetting(setting) {
-        const labels = {
-          'care-plan': ['Care plan', 'Daily care notes'],
-          'health-records': ['Health records', 'Health record notes'],
-          notifications: ['Notifications', 'Reminder preference'],
-          'emergency-contacts': ['Emergency contacts', 'Primary contact']
-        };
-        const [title, label] = labels[setting];
-        const field = document.createElement(setting === 'notifications' ? 'select' : 'textarea');
-        field.className = 'dialog-input';
-        field.name = 'value';
-        field.setAttribute('aria-label', label);
-
-        if (setting === 'notifications') {
-          [['all', 'All reminders'], ['important', 'Important only'], ['off', 'Off']].forEach(([value, text]) => {
-            const option = document.createElement('option');
-            option.value = value;
-            option.textContent = text;
-            field.append(option);
-          });
-          field.value = state.profile[setting] || 'all';
-        } else {
-          field.rows = 4;
-          field.placeholder = label;
-          field.value = state.profile[setting] || '';
-        }
-
-        const labelElement = document.createElement('label');
-        labelElement.className = 'dialog-label';
-        labelElement.textContent = label;
-        labelElement.append(field);
-        openDialog(title, labelElement, () => {
-          state.profile[setting] = field.value;
-          saveState();
-          showToast(`${title} saved`);
-        });
-      }
-
-      function openAddCaregiverDialog() {
-        const content = document.createElement('div');
-        content.className = 'caregiver-form';
-        const fields = {};
-        [
-          ['name', 'Name', 'text', true],
-          ['role', 'Relationship or role', 'text', false],
-          ['phone', 'Phone number', 'tel', true]
-        ].forEach(([name, labelText, type, required]) => {
-          const label = document.createElement('label');
-          label.className = 'dialog-label';
-          label.textContent = labelText;
-          const input = document.createElement('input');
-          input.className = 'dialog-input';
-          input.name = name;
-          input.type = type;
-          input.required = required;
-          label.append(input);
-          content.append(label);
-          fields[name] = input;
-        });
-
-        openDialog('Add caregiver', content, () => {
-          state.caregivers.push({
-            name: fields.name.value.trim(),
-            role: fields.role.value.trim() || 'Caregiver',
-            phone: fields.phone.value.trim()
-          });
-          saveState();
-          renderCaregivers();
-          showToast('Caregiver added');
-        }, 'Add caregiver');
-        fields.name.focus();
-      }
-
-      function openResetDialog() {
-        const message = document.createElement('p');
-        message.className = 'reset-dialog-copy';
-        message.textContent = 'This clears saved task progress, hydration, notification settings, and added caregivers.';
-        openDialog('Reset demo data?', message, () => {
-          localStorage.removeItem(storageKey);
-          window.location.reload();
-        }, 'Reset demo');
-      }
-
-      async function toggleBatteryReminder() {
-        if (!await checkBatteryStatus()) return;
-        state.batteryReminderEnabled = !state.batteryReminderEnabled;
-        saveState();
-        syncNotificationState();
-        if (state.batteryReminderEnabled) updateBatteryDisplay();
-        showToast(state.batteryReminderEnabled ? 'Low-battery reminder enabled' : 'Low-battery reminder disabled');
-      }
-
-      function exportCalendarEvent(button) {
-        const date = button.dataset.date;
-        const time = button.dataset.time;
-        const eventText = button.dataset.event.replaceAll(',', '\\,');
-        const description = button.dataset.description.replaceAll(',', '\\,');
-        const calendarData = [
-          'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Leopard Care//Care Calendar//EN',
-          'BEGIN:VEVENT', `UID:${date}-${time}@leopard-care`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}`,
-          `DTSTART:${date}T${time}`, `SUMMARY:${eventText}`, `DESCRIPTION:${description}`,
-          'END:VEVENT', 'END:VCALENDAR'
-        ].join('\r\n');
-        const file = new Blob([calendarData], { type: 'text/calendar;charset=utf-8' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(file);
-        link.download = `${button.dataset.event.toLowerCase().replaceAll(' ', '-')}.ics`;
-        link.click();
-        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
-        showToast('Calendar event downloaded');
-      }
-
-      function composeMessage(contactName = 'Sarah Johnson', phoneNumber = '+15035550191') {
-        const recipient = document.createElement('p');
-        recipient.className = 'composer-recipient';
-        recipient.textContent = `To ${contactName} · ${phoneNumber}`;
-
-        const field = document.createElement('textarea');
-        field.className = 'dialog-input';
-        field.rows = 5;
-        field.required = true;
-        field.maxLength = 500;
-        field.placeholder = 'Write a message';
-        field.setAttribute('aria-label', `Message to ${contactName}`);
-        field.addEventListener('input', () => {
-          field.setCustomValidity(field.value.trim() ? '' : 'Enter a message.');
-        });
-
-        const label = document.createElement('label');
-        label.className = 'dialog-label';
-        label.textContent = 'Message';
-        label.append(field);
-
-        const content = document.createElement('div');
-        content.className = 'message-composer';
-        content.append(recipient, label);
-        openDialog(`Message ${contactName}`, content, () => {
-          const separator = /iPad|iPhone|iPod/.test(navigator.userAgent) ? '&' : '?';
-          const link = document.createElement('a');
-          link.href = `sms:${phoneNumber}${separator}body=${encodeURIComponent(field.value.trim())}`;
-          link.click();
-          showToast('Message opened in your SMS app');
-        }, 'Open Messages');
-        field.focus();
-      }
-
-      document.addEventListener('click', (event) => {
-        const button = event.target.closest('button');
-        if (!button) return;
-
-        if (button.dataset.screen) {
-          showScreen(button.dataset.screen);
-          return;
-        }
-
-        if (button.dataset.setting) {
-          openSetting(button.dataset.setting);
-          return;
-        }
-
-        if (button.dataset.alertFilter) {
-          alertFilter = button.dataset.alertFilter;
-          syncNotificationState();
-          return;
-        }
-
-        if (button.classList.contains('calendar-action')) {
-          exportCalendarEvent(button);
-          return;
-        }
-
-        const action = button.dataset.action;
-        if (action === 'medication') {
-          state.medicationTaken = true;
-          saveState();
-          syncStateToPage();
-          showToast('Medication recorded');
-        } else if (action === 'hydration') {
-          state.hydration += 1;
-          saveState();
-          updateSummary();
-          showToast(state.hydration >= 8 ? 'Hydration goal reached' : 'Water logged');
-        } else if (action === 'check-battery') {
-          checkBatteryStatus();
-        } else if (action === 'toggle-battery') {
-          toggleBatteryReminder();
-        } else if (action === 'add-caregiver') {
-          openAddCaregiverDialog();
-        } else if (action === 'reset-demo') {
-          openResetDialog();
-        } else if (action === 'task-done') {
-          const index = Number(button.dataset.taskIndex);
-          const title = taskCatalog[index].title;
-          state.tasks[index] = 'done';
-          saveState();
-          syncStateToPage();
-          showToast(`${title} completed`);
-        } else if (action === 'task-next') {
-          const index = Number(button.dataset.taskIndex);
-          state.tasks[index] = state.tasks[index] === 'queued' ? 'next' : 'queued';
-          saveState();
-          syncStateToPage();
-          showToast(state.tasks[index] === 'queued' ? 'Task added to queue' : 'Task removed from queue');
-        } else if (action === 'task-later') {
-          const index = Number(button.dataset.taskIndex);
-          const task = taskCatalog[index];
-          const field = document.createElement('input');
-          field.className = 'dialog-input';
-          field.type = 'datetime-local';
-          field.required = true;
-          field.setAttribute('aria-label', 'New task date and time');
-          const label = document.createElement('label');
-          label.className = 'dialog-label';
-          label.textContent = 'Reschedule for';
-          label.append(field);
-          openDialog(`Reschedule ${task.title}`, label, () => {
-            state.tasks[index] = `Scheduled ${new Date(field.value).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}`;
-            saveState();
-            syncStateToPage();
-            showToast('Task rescheduled');
-          }, 'Reschedule');
-        } else if (action === 'call') {
-          window.location.href = `tel:${button.dataset.phone || '+15035550191'}`;
-        } else if (action === 'message') {
-          composeMessage(button.dataset.contactName, button.dataset.phone);
-        } else if (action === 'mark-alerts-read') {
-          state.readNotifications = [...notificationIds];
-          saveState();
-          syncStateToPage();
-          showToast('Notifications marked as read');
-        }
-      });
-
-      syncStateToPage();
-    </script>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
