@@ -1,4 +1,4 @@
-// The dashboard renders on import; this module adds roles and the server badge.
+// The dashboard renders on import; this module adds roles and the server badge..
 import './app.js';
 import { fetchUser } from './api.js';
 
